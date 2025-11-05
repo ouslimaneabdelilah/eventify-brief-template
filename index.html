@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events Management App</title>
     <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
     <div class="app">
@@ -17,22 +18,22 @@
 
             <nav class="sidebar__nav">
                 <!-- Screen buttons (students will add JS to handle click + switch screens) -->
-                <button class="sidebar__btn is-active" data-screen="stats">
+                <button class="sidebar__btn is-active" data-screen="stats" onclick="switchScreen(this)">
                     <span class="sidebar__icon">📊</span>
                     <span class="sidebar__label">Statistics</span>
                 </button>
 
-                <button class="sidebar__btn" data-screen="add">
+                <button class="sidebar__btn" data-screen="add"  onclick="switchScreen(this)">
                     <span class="sidebar__icon">➕</span>
                     <span class="sidebar__label">Add Event</span>
                 </button>
 
-                <button class="sidebar__btn" data-screen="list">
+                <button class="sidebar__btn" data-screen="list" onclick="switchScreen(this)">
                     <span class="sidebar__icon">📋</span>
                     <span class="sidebar__label">Events</span>
                 </button>
 
-                <button class="sidebar__btn" data-screen="archive">
+                <button class="sidebar__btn" data-screen="archive" onclick="switchScreen(this)">
                     <span class="sidebar__icon">🗄️</span>
                     <span class="sidebar__label">Archive</span>
                 </button>
@@ -93,7 +94,7 @@
 
                             <!-- Title -->
                             <div class="form__group">
-                                <label class="form__label" for="event-title">Event Title</label>
+                                <label class="form__label" for="event-title" >Event Title</label>
                                 <input 
                                     type="text" 
                                     id="event-title" 
@@ -313,5 +314,6 @@
 
     const sampleArchive = [];
     -->
+    <script src="script.js"></script>
 </body>
 </html>
