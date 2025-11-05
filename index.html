@@ -5,27 +5,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Events Management App</title>
         <link rel="stylesheet" href="style.css">
-        <script src="script.js"></script>
         
-</head>
-<body>
-    <div class="app">
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <div class="sidebar__header">
-                <h1 class="sidebar__title">Events</h1>
-                <p class="sidebar__subtitle">Management</p>
-            </div>
-
-            <nav class="sidebar__nav">
-                <!-- Screen buttons (students will add JS to handle click + switch screens) -->
-                <button class="sidebar__btn is-active" data-screen="stats" onclick="switchScreen(this)">
-                    <span class="sidebar__icon">📊</span>
-                    <span class="sidebar__label">Statistics</span>
-                </button>
-
-                <button class="sidebar__btn" data-screen="add"  onclick="switchScreen(this)">
-                    <span class="sidebar__icon">➕</span>
+    </head>
+    <body>
+        <div class="app">
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="sidebar__header">
+                    <h1 class="sidebar__title">Events</h1>
+                    <p class="sidebar__subtitle">Management</p>
+                </div>
+                
+                <nav class="sidebar__nav">
+                    <!-- Screen buttons (students will add JS to handle click + switch screens) -->
+                    <button class="sidebar__btn is-active" data-screen="stats" onclick="switchScreen(this)">
+                        <span class="sidebar__icon">📊</span>
+                        <span class="sidebar__label">Statistics</span>
+                    </button>
+                    
+                    <button class="sidebar__btn" data-screen="add"  onclick="switchScreen(this)">
+                        <span class="sidebar__icon">➕</span>
                     <span class="sidebar__label">Add Event</span>
                 </button>
 
@@ -33,18 +32,18 @@
                     <span class="sidebar__icon">📋</span>
                     <span class="sidebar__label">Events</span>
                 </button>
-
+                
                 <button class="sidebar__btn" data-screen="archive" onclick="switchScreen(this)">
                     <span class="sidebar__icon">🗄️</span>
                     <span class="sidebar__label">Archive</span>
                 </button>
             </nav>
-
+            
             <footer class="sidebar__footer">
                 <p class="text-muted">UI Kit v1.0</p>
             </footer>
         </aside>
-
+        
         <!-- MAIN CONTENT -->
         <main class="main">
             <!-- Page Header (content changes based on active screen) -->
@@ -54,7 +53,7 @@
                     <p class="page-subtitle" id="page-subtitle">Overview of your events</p>
                 </div>
             </header>
-
+            
             <!-- SCREENS (only one visible at a time) -->
             <div class="screens">
                 
@@ -67,7 +66,7 @@
                                 <p class="stat-card__label">Total Events</p>
                                 <p class="stat-card__value" id="stat-total-events">0</p>
                             </article>
-
+                            
                             <article class="stat-card">
                                 <p class="stat-card__label">Total Seats</p>
                                 <p class="stat-card__value" id="stat-total-seats">0</p>
@@ -78,33 +77,33 @@
                                 <p class="stat-card__value" id="stat-total-price">$0</p>
                             </article>
                         </div>
-
+                        
                         <!-- Placeholder for chart (students can add Chart.js or similar) -->
                         <div class="chart-placeholder">
                             <p class="text-muted">📈 Chart will be rendered here by JavaScript</p>
                         </div>
                     </div>
                 </section>
-
+                
                 <!-- SCREEN 2: Add Event -->
                 <section class="screen" data-screen="add">
                     <div class="screen__content">
                         <form class="form" id="event-form">
                             <!-- Error messages area -->
                             <div class="alert alert--error is-hidden" id="form-errors"></div>
-
+                            
                             <!-- Title -->
                             <div class="form__group">
                                 <label class="form__label" for="event-title" >Event Title</label>
                                 <input 
-                                    type="text" 
-                                    id="event-title" 
-                                    class="input" 
-                                    placeholder="Enter event title"
-                                    required
+                                type="text" 
+                                id="event-title" 
+                                class="input" 
+                                placeholder="Enter event title"
+                                required
                                 >
                             </div>
-
+                            
                             <!-- Image URL -->
                             <div class="form__group">
                                 <label class="form__label" for="event-image">Image URL</label>
@@ -113,37 +112,37 @@
                                     id="event-image" 
                                     class="input" 
                                     placeholder="https://example.com/image.jpg"
-                                >
-                            </div>
-
-                            <!-- Description -->
-                            <div class="form__group">
-                                <label class="form__label" for="event-description">Description</label>
-                                <textarea 
+                                    >
+                                </div>
+                                
+                                <!-- Description -->
+                                <div class="form__group">
+                                    <label class="form__label" for="event-description">Description</label>
+                                    <textarea 
                                     id="event-description" 
                                     class="input" 
                                     placeholder="Describe the event..."
                                     rows="4"
-                                ></textarea>
-                            </div>
-
-                            <!-- Seats -->
-                            <div class="form__group">
-                                <label class="form__label" for="event-seats">Number of Seats</label>
-                                <input 
+                                    ></textarea>
+                                </div>
+                                
+                                <!-- Seats -->
+                                <div class="form__group">
+                                    <label class="form__label" for="event-seats">Number of Seats</label>
+                                    <input 
                                     type="number" 
                                     id="event-seats" 
                                     class="input" 
                                     placeholder="100"
                                     min="1"
                                     required
-                                >
-                            </div>
-
-                            <!-- Base Price -->
-                            <div class="form__group">
-                                <label class="form__label" for="event-price">Base Price ($)</label>
-                                <input 
+                                    >
+                                </div>
+                                
+                                <!-- Base Price -->
+                                <div class="form__group">
+                                    <label class="form__label" for="event-price">Base Price ($)</label>
+                                    <input 
                                     type="number" 
                                     id="event-price" 
                                     class="input" 
@@ -151,34 +150,34 @@
                                     min="0"
                                     step="0.01"
                                     required
-                                >
-                            </div>
-
-                            <!-- VARIANTS SECTION -->
-                            <fieldset class="variants">
-                                <legend class="variants__title">
-                                    Pricing Variants (Optional)
-                                    <button type="button" class="btn btn--small" id="btn-add-variant">+ Add Variant</button>
-                                </legend>
+                                    >
+                                </div>
                                 
-                                <!-- Variant rows will be appended here by JS -->
-                                <div id="variants-list" class="variants__list">
-                                    <!-- EXAMPLE: Students should clone this structure -->
-                                    <!-- 
-                                    <div class="variant-row">
-                                        <input type="text" class="input variant-row__name" placeholder="Variant name (e.g., 'Early Bird')" />
-                                        <input type="number" class="input variant-row__qty" placeholder="Qty" min="1" />
-                                        <input type="number" class="input variant-row__value" placeholder="Value" step="0.01" />
-                                        <select class="select variant-row__type">
-                                            <option value="fixed">Fixed Price</option>
-                                            <option value="percentage">Percentage Off</option>
-                                        </select>
-                                        <button type="button" class="btn btn--danger btn--small variant-row__remove">Remove</button>
-                                    </div>
+                                <!-- VARIANTS SECTION -->
+                                <fieldset class="variants">
+                                    <legend class="variants__title">
+                                        Pricing Variants (Optional)
+                                        <button type="button" class="btn btn--small" id="btn-add-variant">+ Add Variant</button>
+                                    </legend>
+                                    
+                                    <!-- Variant rows will be appended here by JS -->
+                                    <div id="variants-list" class="variants__list">
+                                        <!-- EXAMPLE: Students should clone this structure -->
+                                        <!-- 
+                                            <div class="variant-row">
+                                                <input type="text" class="input variant-row__name" placeholder="Variant name (e.g., 'Early Bird')" />
+                                                <input type="number" class="input variant-row__qty" placeholder="Qty" min="1" />
+                                                <input type="number" class="input variant-row__value" placeholder="Value" step="0.01" />
+                                                <select class="select variant-row__type">
+                                                    <option value="fixed">Fixed Price</option>
+                                                    <option value="percentage">Percentage Off</option>
+                                                </select>
+                                                <button type="button" class="btn btn--danger btn--small variant-row__remove">Remove</button>
+                                            </div>
                                     -->
                                 </div>
                             </fieldset>
-
+                            
                             <!-- Submit Button -->
                             <div class="form__actions">
                                 <button type="submit" class="btn btn--primary">Create Event</button>
@@ -187,17 +186,17 @@
                         </form>
                     </div>
                 </section>
-
+                
                 <!-- SCREEN 3: Events List -->
                 <section class="screen" data-screen="list">
                     <div class="screen__content">
                         <!-- Search & Sort Controls -->
                         <div class="controls">
                             <input 
-                                type="text" 
-                                id="search-events" 
-                                class="input" 
-                                placeholder="🔍 Search events by title..."
+                            type="text" 
+                            id="search-events" 
+                            class="input" 
+                            placeholder="🔍 Search events by title..."
                             >
                             <select id="sort-events" class="select">
                                 <option value="title-asc">Sort: Title (A-Z)</option>
@@ -207,7 +206,7 @@
                                 <option value="seats-asc">Sort: Seats (Low to High)</option>
                             </select>
                         </div>
-
+                        
                         <!-- Events Table -->
                         <table class="table" id="events-table">
                             <thead class="table__head">
@@ -223,14 +222,14 @@
                             <tbody class="table__body">
                                 <!-- EXAMPLE: Students will populate this with JS -->
                                 <!-- 
-                                <tr class="table__row" data-event-id="1">
-                                    <td>1</td>
-                                    <td>Summer Festival</td>
-                                    <td>100</td>
-                                    <td>$49.99</td>
-                                    <td><span class="badge">3</span></td>
-                                    <td>
-                                        <button class="btn btn--small" data-action="details" data-event-id="1">Details</button>
+                                    <tr class="table__row" data-event-id="1">
+                                        <td>1</td>
+                                        <td>Summer Festival</td>
+                                        <td>100</td>
+                                        <td>$49.99</td>
+                                        <td><span class="badge">3</span></td>
+                                        <td>
+                                            <button class="btn btn--small" data-action="details" data-event-id="1">Details</button>
                                         <button class="btn btn--small" data-action="edit" data-event-id="1">Edit</button>
                                         <button class="btn btn--danger btn--small" data-action="archive" data-event-id="1">Delete</button>
                                     </td>
@@ -238,14 +237,14 @@
                                 -->
                             </tbody>
                         </table>
-
+                        
                         <!-- Pagination -->
                         <div class="pagination" id="events-pagination">
                             <!-- JS will generate pagination buttons -->
                         </div>
                     </div>
                 </section>
-
+                
                 <!-- SCREEN 4: Archive -->
                 <section class="screen" data-screen="archive">
                     <div class="screen__content">
@@ -262,25 +261,25 @@
                             <tbody class="table__body">
                                 <!-- EXAMPLE: Students will populate this with JS -->
                                 <!-- 
-                                <tr class="table__row" data-event-id="1">
-                                    <td>1</td>
-                                    <td>Old Event</td>
-                                    <td>50</td>
-                                    <td>$29.99</td>
-                                    <td>
-                                        <button class="btn btn--small" data-action="restore" data-event-id="1">Restore</button>
-                                    </td>
-                                </tr>
+                                    <tr class="table__row" data-event-id="1">
+                                        <td>1</td>
+                                        <td>Old Event</td>
+                                        <td>50</td>
+                                        <td>$29.99</td>
+                                        <td>
+                                            <button class="btn btn--small" data-action="restore" data-event-id="1">Restore</button>
+                                        </td>
+                                    </tr>
                                 -->
                             </tbody>
                         </table>
                     </div>
                 </section>
-
+                
             </div>
         </main>
     </div>
-
+    
     <!-- MODAL (hidden by default) -->
     <div class="modal is-hidden" id="event-modal">
         <div class="modal__overlay"></div>
@@ -294,10 +293,10 @@
             </div>
         </div>
     </div>
-
+    
     <!-- SAMPLE DATA (for reference) -->
     <!-- 
-    const sampleEvents = [
+        const sampleEvents = [
         {
             id: 1,
             title: "Summer Festival",
@@ -306,14 +305,15 @@
             seats: 100,
             price: 49.99,
             variants: [
-                { id: 1, name: "Early Bird", qty: 20, value: 10, type: "fixed" },
-                { id: 2, name: "Student", qty: 30, value: 20, type: "percentage" }
+            { id: 1, name: "Early Bird", qty: 20, value: 10, type: "fixed" },
+            { id: 2, name: "Student", qty: 30, value: 20, type: "percentage" }
             ]
-        },
-        ...
-    ];
-
-    const sampleArchive = [];
-    -->
-</body>
+            },
+            ...
+            ];
+            
+            const sampleArchive = [];
+            -->
+            <script src="script.js"></script>
+        </body>
 </html>
