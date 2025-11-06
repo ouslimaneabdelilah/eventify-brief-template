@@ -1,0 +1,69 @@
+{
+  "contentHeader": [
+    {
+      "action": "add",
+      "title": "Add Event",
+      "subtitle": "Ajouter un nouvel événement"
+    },
+    {
+      "action": "stats",
+      "title": "Statistics",
+      "subtitle": "Aperçu de vos événements"
+    },
+    {
+      "action": "list",
+      "title": "Event List",
+      "subtitle": "Liste de tous les événements"
+    },
+    {
+      "action": "archive",
+      "title": "Archived Events",
+      "subtitle": "Événements archivés"
+    }
+  ],
+  "events": [
+    {
+      "id": 1,
+      "title": "Summer Festival",
+      "image": "https://picsum.photos/200/300",
+      "description": "An outdoor music festival with multiple bands and food stalls.",
+      "seats": 100,
+      "price": 49.99,
+      "variants": [
+        { "id": 1, "name": "Early Bird", "qty": 20, "value": 10, "type": "fixed" },
+        { "id": 2, "name": "Student", "qty": 30, "value": 20, "type": "percentage" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Winter Concert",
+      "image": "https://picsum.photos/200/300",
+      "description": "Indoor concert featuring classical and modern composers.",
+      "seats": 150,
+      "price": 59.99,
+      "variants": [
+        { "id": 1, "name": "VIP", "qty": 10, "value": 30, "type": "fixed" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Tech Meetup",
+      "image": "https://picsum.photos/200/300",
+      "description": "Networking event with talks and workshops for developers.",
+      "seats": 80,
+      "price": 0,
+      "variants": []
+    }
+  ],
+  "archive": [
+    {
+      "id": 101,
+      "title": "Old Art Expo",
+      "image": "https://picsum.photos/200/300",
+      "description": "Previously held art exhibition (archived).",
+      "seats": 50,
+      "price": 29.99,
+      "variants": []
+    }
+  ]
+}
