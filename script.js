@@ -10,22 +10,21 @@ let state = {
 
 // ============================================
 
-// Save/load from localStorage
-// async function loadData() {
-//     const dataEvents = localStorage.getItem("events");
-//     const dataArchive = localStorage.getItem("archive");
-//     if (dataEvents) state.events = JSON.parse(dataEvents);
-//     if (dataArchive) state.archive = JSON.parse(dataArchive);
-//     const res = await fetch(dataurl);
-//     const data = await res.json();
-//     state.archive = data.archive;
-//     state.events = data.events;
-// }
+async function loadData() {
+    const dataEvents = localStorage.getItem("events");
+    const dataArchive = localStorage.getItem("archive");
+    if (dataEvents) state.events = JSON.parse(dataEvents);
+    if (dataArchive) state.archive = JSON.parse(dataArchive);
+    const res = await fetch(dataurl);
+    const data = await res.json();
+    state.archive = data.archive;
+    state.events = data.events;
+}
 
-// function saveData() {
-//     localStorage.setItem("events", JSON.stringify(state.events));
-//     localStorage.setItem("archive", JSON.stringify(state.archive));
-// }
+function saveData() {
+    localStorage.setItem("events", JSON.stringify(state.events));
+    localStorage.setItem("archive", JSON.stringify(state.archive));
+}
 
 // ============================================
 // SCREEN SWITCHING
@@ -82,10 +81,10 @@ function switchScreen(e) {
 // ADD EVENT FORM
 // ============================================
 
-// function addEvent(newEvent){
-//     let events = JSON.parse(localStorage.getItem("events"));
-//     events.push(newEvent);
-// }
+function addEvent(newEvent){
+    let events = JSON.parse(localStorage.getItem("events"));
+    events.push(newEvent);
+}
 
 // function handleFormSubmit(e) {
 //     e.preventDefault();
