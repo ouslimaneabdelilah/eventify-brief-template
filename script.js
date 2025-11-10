@@ -598,16 +598,16 @@ function sortEvents(eventList, sortType) {
 }
 
 // Listen to search and sort changes
-// document.getElementById('search-events').addEventListener('input', (e) => {
-//     const filtered = searchEvents(e.target.value)
-//     renderEventsTable(filtered)
-// })
+document.getElementById('search-events').addEventListener('input', (e) => {
+    const filtered = searchEvents(e.target.value)
+    renderEventsTable(filtered)
+})
 
-// document.getElementById('sort-events').addEventListener('change', (e) => {
-//     const sorted = sortEvents(state.events, e.target.value)
-//     console.log(sorted)
-//     renderEventsTable(sorted)
-// })
+document.getElementById('sort-events').addEventListener('change', (e) => {
+    const sorted = sortEvents(state.events, e.target.value)
+    console.log(sorted)
+    renderEventsTable(sorted)
+})
 
 // ============================================
 // INITIALIZATION
