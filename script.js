@@ -248,6 +248,7 @@ function showErrors(container, errors) {
   }, 5000);
 }
 
+// document.getElementById('event-form').addEventListener('submit', handleFormSubmit)
 
 function addVariantRow() {
   const variants = document.getElementById("variants-list");
@@ -314,7 +315,7 @@ function renderEventsTable(eventList, page = 1, perPage = 10) {
     </tr>`;
   });
   tbodyTable.innerHTML = html;
-    // 1. Paginate eventList by page and perPage
+  1; // 1. Paginate eventList by page and perPage
   // 2. Generate table rows for each event
   // 3. Add data-event-id to each row
   // 4. Inject into #events-table tbody
@@ -359,18 +360,18 @@ function renderEventsTable(eventList, page = 1, perPage = 10) {
 //   pagination.appendChild(nextBtn);
 // }
 
-function handleTableActionClick(e) {
+// function handleTableActionClick(e) {
 //   const target = e.target;
 
-  // 1. Check if target has data-action attribute
+//   // 1. Check if target has data-action attribute
 //   const action = target.getAttribute("data-action");
 //   if (!action) return;
 
-  // 2. Get event ID
+//   // 2. Get event ID
 //   const eventId = target.getAttribute("data-event-id");
 //   if (!eventId) return;
 
-  // 3. Call appropriate function
+//   // 3. Call appropriate function
 //   if (action === "details") {
 //     showEventDetails(eventId);
 //   } else if (action === "edit") {
@@ -378,7 +379,7 @@ function handleTableActionClick(e) {
 //   } else if (action === "archive") {
 //     archiveEvent(eventId);
 //   }
-}
+// }
 // document.getElementById('events-table').addEventListener('click', handleTableActionClick)
 // function Find(list, id) {
 //   let resulta = null;
@@ -399,12 +400,12 @@ function handleTableActionClick(e) {
 //   }
 //   return newArray;
 // }
-function showEventDetails(eventId) {
-  // TODO:
-  // 1. Find event by id in events array
+// function showEventDetails(eventId) {
+//   // TODO:
+//   // 1. Find event by id in events array
 //   let event = Find(state.events, eventId);
 //   if (!event) return;
-  // 2. Populate #modal-body with event details
+//   // 2. Populate #modal-body with event details
   
 //   const content = `
 //     <p><strong>Seats:</strong> ${event.seats}</p>
@@ -419,52 +420,52 @@ function showEventDetails(eventId) {
 //   `;
 
 //   openModal(event.title, content);
-  // 3. Remove .is-hidden from #event-modal
-//   const modal = document.getElementById("event-modal");
-//   modal.classList.remove("is-hidden");
-}
+//   // 3. Remove .is-hidden from #event-modal
+// //   const modal = document.getElementById("event-modal");
+// //   modal.classList.remove("is-hidden");
+// }
 
-function editEvent(eventId) {
-  // TODO:
-  // 1. Find event by id
+// function editEvent(eventId) {
+//   // TODO:
+//   // 1. Find event by id
 //   let event = Find(state.events, eventId);
 //   if (!event) return;
-  // 2. Populate form fields with event data
+//   // 2. Populate form fields with event data
 //   document.getElementById("event-title").value = event.title;
 //   document.getElementById("event-seats").value = event.seats;
 //   document.getElementById("event-price").value = event.price;
 
-  // 3. Switch to 'add' screen
+//   // 3. Switch to 'add' screen
 //   document.getElementById("form-screen").classList.remove("is-hidden");
-  // Store editing ID in a global state if needed
+//   // Store editing ID in a global state if needed
 //   state.editingEventId = event.id;
-  // 4. On submit, update existing event instead of creating new
-}
+//   // 4. On submit, update existing event instead of creating new
+// }
 
-function archiveEvent(eventId) {
-  // TODO:
-  // 1. Find event by id in events
+// function archiveEvent(eventId) {
+//   // TODO:
+//   // 1. Find event by id in events
 //   let event = Find(state.events, eventId);
 //   if (!event) return;
-  // 2. Move to archive array
+//   // 2. Move to archive array
 //   state.archive.push(event);
-  // 3. Remove from events array
+//   // 3. Remove from events array
 //   let newStateEvents = Filter(state.events, eventId);
 //   state.events = newStateEvents;
-  // 4. Save data
+//   // 4. Save data
 //   saveData();
-  // 5. Re-render table
+//   // 5. Re-render table
 //   renderEventsTable(state.events);
-}
+// }
 
 // ============================================
 // ARCHIVE SCREEN
 // ============================================
 
-function renderArchiveTable(archivedList) {
-  // TODO:
-  // Similar to renderEventsTable but read-only
-  // Show "Restore" button instead of "Edit"/"Delete"
+// function renderArchiveTable(archivedList) {
+//   // TODO:
+//   // Similar to renderEventsTable but read-only
+//   // Show "Restore" button instead of "Edit"/"Delete"
 //   const tbodyTable = document.querySelector(".table__body2");
 //   let html = "";
 
@@ -488,34 +489,33 @@ function renderArchiveTable(archivedList) {
 //   tbodyTable.innerHTML = html;
 // }
 
-function restoreEvent(eventId) {
-  // TODO:
-  // 1. Find event by id in archive
-//   let archive = Find(state.archive, eventId); 
-  // 2. Move back to events array
+// function restoreEvent(eventId) {
+//   // TODO:
+//   // 1. Find event by id in archive
+//   let archive = Find(state.archive, eventId); // 2. Move back to events array
 //   state.events.push(archive);
 //   console.log(state.events);
-  // 3. Remove from archive
+//   // 3. Remove from archive
 //   let newStateArchive = Filter(state.archive, eventId);
 //   state.archive = newStateArchive;
 //   console.log(state.archive);
 //   saveData();
 //   renderArchiveTable(state.archive);
-  // 4. Save data
-  // 5. Re-render both tables
-}
+//   // 4. Save data
+//   // 5. Re-render both tables
+// }
 
 // ============================================
 // MODAL
 // ============================================
 
-function openModal(title, content) {
-  // TODO:
+// function openModal(title, content) {
+//   // TODO:
 
-  // 1. Set #modal-title
+//   // 1. Set #modal-title
 
 //   const modalTitle = document.getElementById("modal-title");
-  // 2. Set #modal-body content
+//   // 2. Set #modal-body content
 
 //   const modalBody = document.getElementById("modal-body");
 
@@ -523,62 +523,91 @@ function openModal(title, content) {
 
 //   modalTitle.textContent = title;
 //   modalBody.innerHTML = content;
-  // 3. Remove .is-hidden from #event-modal
+//   // 3. Remove .is-hidden from #event-modal
 
 //   modal.classList.remove("is-hidden");
-}
+// }
 
 
-function closeModal() {
-  // TODO:
-  // Add .is-hidden to #event-modal
+// function closeModal() {
+//   // TODO:
+//   // Add .is-hidden to #event-modal
 //   document.getElementById("event-modal").classList.add("is-hidden");
    
-}
+// }
 
 // Listen to close button and overlay click
-// document.getElementById('event-modal').addEventListener('click', (e) => {
-//     if (e.target.dataset.action === 'close-modal' || e.target.classList.contains('modal__overlay')) {
-//         closeModal()
-//     }
-// })
+document.getElementById('event-modal').addEventListener('click', (e) => {
+    if (e.target.dataset.action === 'close-modal' || e.target.classList.contains('modal__overlay')) {
+        closeModal()
+    }
+})
 
 // ============================================
 // SEARCH & SORT
 // ============================================
 
-function searchEvents(query) {
-  // TODO:
-  // Filter events by title (case-insensitive)
+// function searchEvents(query) {
+//   // TODO:
+//   // Filter events by title (case-insensitive)
 //   const eventQuery = state.events.filter(event => event.title.toLowerCase().includes(query.toLowerCase()));
-  // Return filtered array
+//   // Return filtered array
 //   return eventQuery;
-}
+// }
 
-
-function sortEvents(eventList, sortType) {
-  // TODO:
-  // Sort by: title-asc, title-desc, price-asc, price-desc, seats-asc
-    // const sortSelect = document.getElementById("sort-events")
-    // if(sortSelect.value === title-asc){
-    //     for (let index = 0; index < eventList.length; index++) {
-    //         eventList.toLowerCase() === 
+// function Sort(list,selectby,type){
+//      for (let index = 0; index < list.length; index++) {
+//             for (let j = index+1; j < list.length; j++) {
+//                 let a = (selectby === "title" ? list[index].title.toLowerCase():
+//                     selectby === "price" ? Number(list[index].price) :
+//                     selectby === "seats" ? Number(list[index].seats) : "")
+//                 let b = (selectby === "title" ? list[j].title.toLowerCase():
+//                     selectby === "price" ? Number(list[j].price) :
+//                     selectby === "seats" ? Number(list[j].seats) : ""
+//             )
+//                 if((type === "asc" && a>b) || (type === "desc" && a<b)){
+//                     let temp = list[index]
+//                     list[index] = list[j]
+//                     list[j] = temp
+//                 }
+                
+//             }
             
-    //     }
-    // }
-  // Return sorted array
-}
+//         }
+//         return list;
+// }
+// function sortEvents(eventList, sortType) {
+//   // TODO:
+//   // Sort by: title-asc, title-desc, price-asc, price-desc, seats-asc
+//     if(sortType === "title-asc"){
+//        eventList = Sort(eventList,"title","asc")
+//     }
+//     if(sortType === "title-desc"){
+//        eventList =Sort(eventList,"title","desc")
+//     }
+//     if(sortType === "price-asc"){
+//        eventList =Sort(eventList,"price","asc")
+//     }
+//     if(sortType === "price-desc"){
+//        eventList =Sort(eventList,"price","desc")
+//     }
+//     if(sortType === "seats-asc"){
+//        eventList=Sort(eventList,"seats","asc")
+//     }
+//   return eventList;
+// }
 
 // Listen to search and sort changes
-document.getElementById('search-events').addEventListener('input', (e) => {
-    const filtered = searchEvents(e.target.value)
-    renderEventsTable(filtered)
-})
+// document.getElementById('search-events').addEventListener('input', (e) => {
+//     const filtered = searchEvents(e.target.value)
+//     renderEventsTable(filtered)
+// })
 
-document.getElementById('sort-events').addEventListener('change', (e) => {
-    const sorted = sortEvents(events, e.target.value)
-    renderEventsTable(sorted)
-})
+// document.getElementById('sort-events').addEventListener('change', (e) => {
+//     const sorted = sortEvents(state.events, e.target.value)
+//     console.log(sorted)
+//     renderEventsTable(sorted)
+// })
 
 // ============================================
 // INITIALIZATION
@@ -594,9 +623,9 @@ function init() {
 document.addEventListener("DOMContentLoaded", async () => {
   await loadData();
   saveData();
-  renderStats();
+//   renderStats();
   const form = document.getElementById("event-form");
   form.addEventListener("submit", handleFormSubmit);
   renderEventsTable(state.events, 1, 10);
-  renderArchiveTable(state.archive);
+//   renderArchiveTable(state.archive);
 });
