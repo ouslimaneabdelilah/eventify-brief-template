@@ -278,7 +278,7 @@ function removeVariantRow(button) {
 // ============================================
 
 function renderEventsTable(eventList, page = 1, perPage = 10) {
-  // TODO:
+  // TODO
   const tbodyTable = document.querySelector(".table__body");
   let html = "";
   eventList.forEach((event, i) => {
