@@ -276,50 +276,50 @@ function removeVariantRow(button) {
 // EVENTS LIST SCREEN
 // ============================================
 
-// function renderEventsTable(eventList, page = 1, perPage = 10) {
-//   // TODO:
-//   const tbodyTable = document.querySelector(".table__body");
-//   let html = "";
-//   eventList.forEach((event, i) => {
-//     html += `
-//     <tr class="table__row" data-event-id="1">
+function renderEventsTable(eventList, page = 1, perPage = 10) {
+  // TODO:
+  const tbodyTable = document.querySelector(".table__body");
+  let html = "";
+  eventList.forEach((event, i) => {
+    html += `
+    <tr class="table__row" data-event-id="1">
 
-//       <td>${i + 1}</td>
-//       <td>${event.title}</td>
-//       <td>${event.seats}</td>
-//       <td>$${event.price}</td>
-//       <td><span class="badge">${event.variants
-//         .map(
-//           (variant) =>
-//             `  <ul>
-//             <li>Name : ${variant.name} hhh</li>
-//             <li>QTY : ${variant.qty}</li>
-//             <li>Value : ${variant.value} ${
-//               variant.type === "percentage" ? "%" : "$"
-//             }</li>
-//         </ul>`
-//         )
-//         .join("")}</span></td>
-//       <td>
-//         <button class="btn btn--small" data-action="details" data-event-id="${
-//           event.id
-//         }" onclick="showEventDetails(${event.id})">Details</button>
-//         <button class="btn btn--small" data-action="edit" data-event-id="${
-//           event.id
-//         }" onclick="editEvent(${event.id})">Edit</button>
-//         <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${
-//           event.id
-//         }" onclick="archiveEvent(${event.id})">Delete</button>
-//       </td>
-//     </tr>`;
-//   });
-//   tbodyTable.innerHTML = html;
-//     // 1. Paginate eventList by page and perPage
-//   // 2. Generate table rows for each event
-//   // 3. Add data-event-id to each row
-//   // 4. Inject into #events-table tbody
-//   // 5. Call renderPagination()
-// }
+      <td>${i + 1}</td>
+      <td>${event.title}</td>
+      <td>${event.seats}</td>
+      <td>$${event.price}</td>
+      <td><span class="badge">${event.variants
+        .map(
+          (variant) =>
+            `  <ul>
+            <li>Name : ${variant.name} hhh</li>
+            <li>QTY : ${variant.qty}</li>
+            <li>Value : ${variant.value} ${
+              variant.type === "percentage" ? "%" : "$"
+            }</li>
+        </ul>`
+        )
+        .join("")}</span></td>
+      <td>
+        <button class="btn btn--small" data-action="details" data-event-id="${
+          event.id
+        }" onclick="showEventDetails(${event.id})">Details</button>
+        <button class="btn btn--small" data-action="edit" data-event-id="${
+          event.id
+        }" onclick="editEvent(${event.id})">Edit</button>
+        <button class="btn btn--danger btn--small" data-action="archive" data-event-id="${
+          event.id
+        }" onclick="archiveEvent(${event.id})">Delete</button>
+      </td>
+    </tr>`;
+  });
+  tbodyTable.innerHTML = html;
+    // 1. Paginate eventList by page and perPage
+  // 2. Generate table rows for each event
+  // 3. Add data-event-id to each row
+  // 4. Inject into #events-table tbody
+  // 5. Call renderPagination()
+}
 
 // function renderPagination(totalItems, currentPage, perPage) {
 //   // TODO:
