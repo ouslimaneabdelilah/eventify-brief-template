@@ -248,7 +248,6 @@ function showErrors(container, errors) {
   }, 5000);
 }
 
-// document.getElementById('event-form').addEventListener('submit', handleFormSubmit)
 
 function addVariantRow() {
   const variants = document.getElementById("variants-list");
