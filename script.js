@@ -537,11 +537,11 @@ function restoreEvent(eventId) {
 // }
 
 // Listen to close button and overlay click
-document.getElementById('event-modal').addEventListener('click', (e) => {
-    if (e.target.dataset.action === 'close-modal' || e.target.classList.contains('modal__overlay')) {
-        closeModal()
-    }
-})
+// document.getElementById('event-modal').addEventListener('click', (e) => {
+//     if (e.target.dataset.action === 'close-modal' || e.target.classList.contains('modal__overlay')) {
+//         closeModal()
+//     }
+// })
 
 // ============================================
 // SEARCH & SORT
