@@ -547,13 +547,13 @@ document.getElementById('event-modal').addEventListener('click', (e) => {
 // SEARCH & SORT
 // ============================================
 
-// function searchEvents(query) {
-//   // TODO:
-//   // Filter events by title (case-insensitive)
-//   const eventQuery = state.events.filter(event => event.title.toLowerCase().includes(query.toLowerCase()));
-//   // Return filtered array
-//   return eventQuery;
-// }
+function searchEvents(query) {
+  // TODO:
+  // Filter events by title (case-insensitive)
+  const eventQuery = state.events.filter(event => event.title.toLowerCase().includes(query.toLowerCase()));
+  // Return filtered array
+  return eventQuery;
+}
 
 function Sort(list,selectby,type){
      for (let index = 0; index < list.length; index++) {
