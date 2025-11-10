@@ -10,25 +10,25 @@ let state = {
 
 // ============================================
 
-async function loadData() {
-  const dataEvents = localStorage.getItem("events");
-  const dataArchive = localStorage.getItem("archive");
-  if (dataEvents) state.events = JSON.parse(dataEvents);
-  if (dataArchive) state.archive = JSON.parse(dataArchive);
-  try {
-    const res = await fetch(dataurl);
-    const data = await res.json();
-    if (!dataArchive) state.archive = data.archive || [];
-    if (!dataEvents) state.events = data.events || [];
-  } catch (err) {
-    console.log("error f data");
-  }
-}
+// async function loadData() {
+//   const dataEvents = localStorage.getItem("events");
+//   const dataArchive = localStorage.getItem("archive");
+//   if (dataEvents) state.events = JSON.parse(dataEvents);
+//   if (dataArchive) state.archive = JSON.parse(dataArchive);
+//   try {
+//     const res = await fetch(dataurl);
+//     const data = await res.json();
+//     if (!dataArchive) state.archive = data.archive || [];
+//     if (!dataEvents) state.events = data.events || [];
+//   } catch (err) {
+//     console.log("error f data");
+//   }
+// }
 
-function saveData() {
-  localStorage.setItem("events", JSON.stringify(state.events));
-  localStorage.setItem("archive", JSON.stringify(state.archive));
-}
+// function saveData() {
+//   localStorage.setItem("events", JSON.stringify(state.events));
+//   localStorage.setItem("archive", JSON.stringify(state.archive));
+// }
 
 // ============================================
 // SCREEN SWITCHING
@@ -266,7 +266,7 @@ function addVariantRow() {
   // 3. Add remove listener to new row's remove button
 }
 
-// document.getElementById('btn-add-variant').addEventListener('click', addVariantRow)
+document.getElementById('btn-add-variant').addEventListener('click', addVariantRow)
 
 function removeVariantRow(button) {
   button.closest(".variant-row").remove();
@@ -277,7 +277,7 @@ function removeVariantRow(button) {
 // ============================================
 
 function renderEventsTable(eventList, page = 1, perPage = 10) {
-  // TODO:
+  // TODO
   const tbodyTable = document.querySelector(".table__body");
   let html = "";
   eventList.forEach((event, i) => {
@@ -314,7 +314,7 @@ function renderEventsTable(eventList, page = 1, perPage = 10) {
     </tr>`;
   });
   tbodyTable.innerHTML = html;
-    // 1. Paginate eventList by page and perPage
+  // 1. Paginate eventList by page and perPage
   // 2. Generate table rows for each event
   // 3. Add data-event-id to each row
   // 4. Inject into #events-table tbody
@@ -360,51 +360,51 @@ function renderEventsTable(eventList, page = 1, perPage = 10) {
 // }
 
 function handleTableActionClick(e) {
-//   const target = e.target;
+  const target = e.target;
 
   // 1. Check if target has data-action attribute
-//   const action = target.getAttribute("data-action");
-//   if (!action) return;
+  const action = target.getAttribute("data-action");
+  if (!action) return;
 
   // 2. Get event ID
-//   const eventId = target.getAttribute("data-event-id");
-//   if (!eventId) return;
+  const eventId = target.getAttribute("data-event-id");
+  if (!eventId) return;
 
   // 3. Call appropriate function
-//   if (action === "details") {
-//     showEventDetails(eventId);
-//   } else if (action === "edit") {
-//     editEvent(eventId);
-//   } else if (action === "archive") {
-//     archiveEvent(eventId);
-//   }
+  if (action === "details") {
+    showEventDetails(eventId);
+  } else if (action === "edit") {
+    editEvent(eventId);
+  } else if (action === "archive") {
+    archiveEvent(eventId);
+  }
 }
 // document.getElementById('events-table').addEventListener('click', handleTableActionClick)
-// function Find(list, id) {
-//   let resulta = null;
-//   for (let i = 0; i < list.length; i++) {
-//     if (list[i].id === Number(id)) {
-//       resulta = list[i];
-//       break;
-//     }
-//   }
-//   return resulta;
-// }
-// function Filter(list, id) {
-//   let newArray = [];
-//   for (let index = 0; index < list.length; index++) {
-//     if (Number(list[index].id) !== Number(id)) {
-//       newArray.push(list[index]);
-//     }
-//   }
-//   return newArray;
-// }
-function showEventDetails(eventId) {
-  // TODO:
-  // 1. Find event by id in events array
+function Find(list, id) {
+  let resulta = null;
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].id === Number(id)) {
+      resulta = list[i];
+      break;
+    }
+  }
+  return resulta;
+}
+function Filter(list, id) {
+  let newArray = [];
+  for (let index = 0; index < list.length; index++) {
+    if (Number(list[index].id) !== Number(id)) {
+      newArray.push(list[index]);
+    }
+  }
+  return newArray;
+}
+// function showEventDetails(eventId) {
+//   // TODO:
+//   // 1. Find event by id in events array
 //   let event = Find(state.events, eventId);
 //   if (!event) return;
-  // 2. Populate #modal-body with event details
+//   // 2. Populate #modal-body with event details
   
 //   const content = `
 //     <p><strong>Seats:</strong> ${event.seats}</p>
@@ -419,42 +419,43 @@ function showEventDetails(eventId) {
 //   `;
 
 //   openModal(event.title, content);
-  // 3. Remove .is-hidden from #event-modal
-//   const modal = document.getElementById("event-modal");
-//   modal.classList.remove("is-hidden");
-}
+//   // 3. Remove .is-hidden from #event-modal
+// //   const modal = document.getElementById("event-modal");
+// //   modal.classList.remove("is-hidden");
+// }
 
-function editEvent(eventId) {
-  // TODO:
-  // 1. Find event by id
+// function editEvent(eventId) {
+//   // TODO:
+//   // 1. Find event by id
 //   let event = Find(state.events, eventId);
 //   if (!event) return;
-  // 2. Populate form fields with event data
+//   // 2. Populate form fields with event data
 //   document.getElementById("event-title").value = event.title;
 //   document.getElementById("event-seats").value = event.seats;
 //   document.getElementById("event-price").value = event.price;
 
-  // 3. Switch to 'add' screen
+//   // 3. Switch to 'add' screen
 //   document.getElementById("form-screen").classList.remove("is-hidden");
-  // Store editing ID in a global state if needed
+//   // Store editing ID in a global state if needed
 //   state.editingEventId = event.id;
-  // 4. On submit, update existing event instead of creating new
-}
+//   // 4. On submit, update existing event instead of creating new
+// }
 
 function archiveEvent(eventId) {
   // TODO:
   // 1. Find event by id in events
-//   let event = Find(state.events, eventId);
-//   if (!event) return;
+  let event = Find(state.events, eventId);
+  if (!event) return;
   // 2. Move to archive array
-//   state.archive.push(event);
+  state.archive.push(event);
   // 3. Remove from events array
-//   let newStateEvents = Filter(state.events, eventId);
-//   state.events = newStateEvents;
+  let newStateEvents = Filter(state.events, eventId);
+  state.events = newStateEvents;
   // 4. Save data
-//   saveData();
+  saveData();
   // 5. Re-render table
-//   renderEventsTable(state.events);
+  renderEventsTable(state.events);
+
 }
 
 // ============================================
@@ -465,42 +466,41 @@ function renderArchiveTable(archivedList) {
   // TODO:
   // Similar to renderEventsTable but read-only
   // Show "Restore" button instead of "Edit"/"Delete"
-//   const tbodyTable = document.querySelector(".table__body2");
-//   let html = "";
+  const tbodyTable = document.querySelector(".table__body2");
+  let html = "";
 
-//   archivedList.forEach((event, i) => {
-//     html += `
-//       <tr class="table__row" data-event-id="event.id">
-//         <td>${i + 1}</td>
-//         <td>${event.title}</td>
-//         <td>${event.seats}</td>
-//         <td>${event.price}</td>
-//         <td>
-//           <button class="btn btn-success btn-small" onclick="restoreEvent(${
-//             event.id
-//           })" data-action="restore" data-event-id="${event.id}">
-//             Restore
-//           </button>
-//         </td>
-//       </tr>
-//     `;
-//   });
-//   tbodyTable.innerHTML = html;
-// }
+  archivedList.forEach((event, i) => {
+    html += `
+      <tr class="table__row" data-event-id="event.id">
+        <td>${i + 1}</td>
+        <td>${event.title}</td>
+        <td>${event.seats}</td>
+        <td>${event.price}</td>
+        <td>
+          <button class="btn btn-success btn-small" onclick="restoreEvent(${
+            event.id
+          })" data-action="restore" data-event-id="${event.id}">
+            Restore
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+  tbodyTable.innerHTML = html;
+}
 
 function restoreEvent(eventId) {
   // TODO:
   // 1. Find event by id in archive
-//   let archive = Find(state.archive, eventId); 
-  // 2. Move back to events array
-//   state.events.push(archive);
-//   console.log(state.events);
+  let archive = Find(state.archive, eventId); // 2. Move back to events array
+  state.events.push(archive);
+  console.log(state.events);
   // 3. Remove from archive
-//   let newStateArchive = Filter(state.archive, eventId);
-//   state.archive = newStateArchive;
-//   console.log(state.archive);
-//   saveData();
-//   renderArchiveTable(state.archive);
+  let newStateArchive = Filter(state.archive, eventId);
+  state.archive = newStateArchive;
+  console.log(state.archive);
+  saveData();
+  renderArchiveTable(state.archive);
   // 4. Save data
   // 5. Re-render both tables
 }
@@ -509,13 +509,13 @@ function restoreEvent(eventId) {
 // MODAL
 // ============================================
 
-function openModal(title, content) {
-  // TODO:
+// function openModal(title, content) {
+//   // TODO:
 
-  // 1. Set #modal-title
+//   // 1. Set #modal-title
 
 //   const modalTitle = document.getElementById("modal-title");
-  // 2. Set #modal-body content
+//   // 2. Set #modal-body content
 
 //   const modalBody = document.getElementById("modal-body");
 
@@ -523,18 +523,18 @@ function openModal(title, content) {
 
 //   modalTitle.textContent = title;
 //   modalBody.innerHTML = content;
-  // 3. Remove .is-hidden from #event-modal
+//   // 3. Remove .is-hidden from #event-modal
 
 //   modal.classList.remove("is-hidden");
-}
+// }
 
 
-function closeModal() {
-  // TODO:
-  // Add .is-hidden to #event-modal
+// function closeModal() {
+//   // TODO:
+//   // Add .is-hidden to #event-modal
 //   document.getElementById("event-modal").classList.add("is-hidden");
    
-}
+// }
 
 // Listen to close button and overlay click
 // document.getElementById('event-modal').addEventListener('click', (e) => {
@@ -550,23 +550,51 @@ function closeModal() {
 function searchEvents(query) {
   // TODO:
   // Filter events by title (case-insensitive)
-//   const eventQuery = state.events.filter(event => event.title.toLowerCase().includes(query.toLowerCase()));
+  const eventQuery = state.events.filter(event => event.title.toLowerCase().includes(query.toLowerCase()));
   // Return filtered array
-//   return eventQuery;
+  return eventQuery;
 }
 
-
+function Sort(list,selectby,type){
+     for (let index = 0; index < list.length; index++) {
+            for (let j = index+1; j < list.length; j++) {
+                let a = (selectby === "title" ? list[index].title.toLowerCase():
+                    selectby === "price" ? Number(list[index].price) :
+                    selectby === "seats" ? Number(list[index].seats) : "")
+                let b = (selectby === "title" ? list[j].title.toLowerCase():
+                    selectby === "price" ? Number(list[j].price) :
+                    selectby === "seats" ? Number(list[j].seats) : ""
+            )
+                if((type === "asc" && a>b) || (type === "desc" && a<b)){
+                    let temp = list[index]
+                    list[index] = list[j]
+                    list[j] = temp
+                }
+                
+            }
+            
+        }
+        return list;
+}
 function sortEvents(eventList, sortType) {
   // TODO:
   // Sort by: title-asc, title-desc, price-asc, price-desc, seats-asc
-    // const sortSelect = document.getElementById("sort-events")
-    // if(sortSelect.value === title-asc){
-    //     for (let index = 0; index < eventList.length; index++) {
-    //         eventList.toLowerCase() === 
-            
-    //     }
-    // }
-  // Return sorted array
+    if(sortType === "title-asc"){
+       eventList = Sort(eventList,"title","asc")
+    }
+    if(sortType === "title-desc"){
+       eventList =Sort(eventList,"title","desc")
+    }
+    if(sortType === "price-asc"){
+       eventList =Sort(eventList,"price","asc")
+    }
+    if(sortType === "price-desc"){
+       eventList =Sort(eventList,"price","desc")
+    }
+    if(sortType === "seats-asc"){
+       eventList=Sort(eventList,"seats","asc")
+    }
+  return eventList;
 }
 
 // Listen to search and sort changes
@@ -576,7 +604,8 @@ document.getElementById('search-events').addEventListener('input', (e) => {
 })
 
 document.getElementById('sort-events').addEventListener('change', (e) => {
-    const sorted = sortEvents(events, e.target.value)
+    const sorted = sortEvents(state.events, e.target.value)
+    console.log(sorted)
     renderEventsTable(sorted)
 })
 
@@ -594,9 +623,9 @@ function init() {
 document.addEventListener("DOMContentLoaded", async () => {
   await loadData();
   saveData();
-  renderStats();
+//   renderStats();
   const form = document.getElementById("event-form");
   form.addEventListener("submit", handleFormSubmit);
   renderEventsTable(state.events, 1, 10);
-  renderArchiveTable(state.archive);
+//   renderArchiveTable(state.archive);
 });
