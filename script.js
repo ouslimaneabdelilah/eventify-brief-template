@@ -248,7 +248,6 @@ function showErrors(container, errors) {
   }, 5000);
 }
 
-// document.getElementById('event-form').addEventListener('submit', handleFormSubmit)
 
 function addVariantRow() {
   const variants = document.getElementById("variants-list");
@@ -267,7 +266,7 @@ function addVariantRow() {
   // 3. Add remove listener to new row's remove button
 }
 
-// document.getElementById('btn-add-variant').addEventListener('click', addVariantRow)
+document.getElementById('btn-add-variant').addEventListener('click', addVariantRow)
 
 function removeVariantRow(button) {
   button.closest(".variant-row").remove();
@@ -381,25 +380,25 @@ function handleTableActionClick(e) {
   }
 }
 // document.getElementById('events-table').addEventListener('click', handleTableActionClick)
-// function Find(list, id) {
-//   let resulta = null;
-//   for (let i = 0; i < list.length; i++) {
-//     if (list[i].id === Number(id)) {
-//       resulta = list[i];
-//       break;
-//     }
-//   }
-//   return resulta;
-// }
-// function Filter(list, id) {
-//   let newArray = [];
-//   for (let index = 0; index < list.length; index++) {
-//     if (Number(list[index].id) !== Number(id)) {
-//       newArray.push(list[index]);
-//     }
-//   }
-//   return newArray;
-// }
+function Find(list, id) {
+  let resulta = null;
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].id === Number(id)) {
+      resulta = list[i];
+      break;
+    }
+  }
+  return resulta;
+}
+function Filter(list, id) {
+  let newArray = [];
+  for (let index = 0; index < list.length; index++) {
+    if (Number(list[index].id) !== Number(id)) {
+      newArray.push(list[index]);
+    }
+  }
+  return newArray;
+}
 // function showEventDetails(eventId) {
 //   // TODO:
 //   // 1. Find event by id in events array
@@ -463,48 +462,48 @@ function archiveEvent(eventId) {
 // ARCHIVE SCREEN
 // ============================================
 
-// function renderArchiveTable(archivedList) {
-//   // TODO:
-//   // Similar to renderEventsTable but read-only
-//   // Show "Restore" button instead of "Edit"/"Delete"
-//   const tbodyTable = document.querySelector(".table__body2");
-//   let html = "";
+function renderArchiveTable(archivedList) {
+  // TODO:
+  // Similar to renderEventsTable but read-only
+  // Show "Restore" button instead of "Edit"/"Delete"
+  const tbodyTable = document.querySelector(".table__body2");
+  let html = "";
 
-//   archivedList.forEach((event, i) => {
-//     html += `
-//       <tr class="table__row" data-event-id="event.id">
-//         <td>${i + 1}</td>
-//         <td>${event.title}</td>
-//         <td>${event.seats}</td>
-//         <td>${event.price}</td>
-//         <td>
-//           <button class="btn btn-success btn-small" onclick="restoreEvent(${
-//             event.id
-//           })" data-action="restore" data-event-id="${event.id}">
-//             Restore
-//           </button>
-//         </td>
-//       </tr>
-//     `;
-//   });
-//   tbodyTable.innerHTML = html;
-// }
+  archivedList.forEach((event, i) => {
+    html += `
+      <tr class="table__row" data-event-id="event.id">
+        <td>${i + 1}</td>
+        <td>${event.title}</td>
+        <td>${event.seats}</td>
+        <td>${event.price}</td>
+        <td>
+          <button class="btn btn-success btn-small" onclick="restoreEvent(${
+            event.id
+          })" data-action="restore" data-event-id="${event.id}">
+            Restore
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+  tbodyTable.innerHTML = html;
+}
 
-// function restoreEvent(eventId) {
-//   // TODO:
-//   // 1. Find event by id in archive
-//   let archive = Find(state.archive, eventId); // 2. Move back to events array
-//   state.events.push(archive);
-//   console.log(state.events);
-//   // 3. Remove from archive
-//   let newStateArchive = Filter(state.archive, eventId);
-//   state.archive = newStateArchive;
-//   console.log(state.archive);
-//   saveData();
-//   renderArchiveTable(state.archive);
-//   // 4. Save data
-//   // 5. Re-render both tables
-// }
+function restoreEvent(eventId) {
+  // TODO:
+  // 1. Find event by id in archive
+  let archive = Find(state.archive, eventId); // 2. Move back to events array
+  state.events.push(archive);
+  console.log(state.events);
+  // 3. Remove from archive
+  let newStateArchive = Filter(state.archive, eventId);
+  state.archive = newStateArchive;
+  console.log(state.archive);
+  saveData();
+  renderArchiveTable(state.archive);
+  // 4. Save data
+  // 5. Re-render both tables
+}
 
 // ============================================
 // MODAL
