@@ -555,47 +555,47 @@ document.getElementById('event-modal').addEventListener('click', (e) => {
 //   return eventQuery;
 // }
 
-// function Sort(list,selectby,type){
-//      for (let index = 0; index < list.length; index++) {
-//             for (let j = index+1; j < list.length; j++) {
-//                 let a = (selectby === "title" ? list[index].title.toLowerCase():
-//                     selectby === "price" ? Number(list[index].price) :
-//                     selectby === "seats" ? Number(list[index].seats) : "")
-//                 let b = (selectby === "title" ? list[j].title.toLowerCase():
-//                     selectby === "price" ? Number(list[j].price) :
-//                     selectby === "seats" ? Number(list[j].seats) : ""
-//             )
-//                 if((type === "asc" && a>b) || (type === "desc" && a<b)){
-//                     let temp = list[index]
-//                     list[index] = list[j]
-//                     list[j] = temp
-//                 }
+function Sort(list,selectby,type){
+     for (let index = 0; index < list.length; index++) {
+            for (let j = index+1; j < list.length; j++) {
+                let a = (selectby === "title" ? list[index].title.toLowerCase():
+                    selectby === "price" ? Number(list[index].price) :
+                    selectby === "seats" ? Number(list[index].seats) : "")
+                let b = (selectby === "title" ? list[j].title.toLowerCase():
+                    selectby === "price" ? Number(list[j].price) :
+                    selectby === "seats" ? Number(list[j].seats) : ""
+            )
+                if((type === "asc" && a>b) || (type === "desc" && a<b)){
+                    let temp = list[index]
+                    list[index] = list[j]
+                    list[j] = temp
+                }
                 
-//             }
+            }
             
-//         }
-//         return list;
-// }
-// function sortEvents(eventList, sortType) {
-//   // TODO:
-//   // Sort by: title-asc, title-desc, price-asc, price-desc, seats-asc
-//     if(sortType === "title-asc"){
-//        eventList = Sort(eventList,"title","asc")
-//     }
-//     if(sortType === "title-desc"){
-//        eventList =Sort(eventList,"title","desc")
-//     }
-//     if(sortType === "price-asc"){
-//        eventList =Sort(eventList,"price","asc")
-//     }
-//     if(sortType === "price-desc"){
-//        eventList =Sort(eventList,"price","desc")
-//     }
-//     if(sortType === "seats-asc"){
-//        eventList=Sort(eventList,"seats","asc")
-//     }
-//   return eventList;
-// }
+        }
+        return list;
+}
+function sortEvents(eventList, sortType) {
+  // TODO:
+  // Sort by: title-asc, title-desc, price-asc, price-desc, seats-asc
+    if(sortType === "title-asc"){
+       eventList = Sort(eventList,"title","asc")
+    }
+    if(sortType === "title-desc"){
+       eventList =Sort(eventList,"title","desc")
+    }
+    if(sortType === "price-asc"){
+       eventList =Sort(eventList,"price","asc")
+    }
+    if(sortType === "price-desc"){
+       eventList =Sort(eventList,"price","desc")
+    }
+    if(sortType === "seats-asc"){
+       eventList=Sort(eventList,"seats","asc")
+    }
+  return eventList;
+}
 
 // Listen to search and sort changes
 // document.getElementById('search-events').addEventListener('input', (e) => {
