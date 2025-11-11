@@ -81,27 +81,27 @@ function renderStats() {
   document.getElementById("stat-total-price").textContent =
     "$" + totalPrice.toFixed(2);
 
-  // const ctx = document.getElementById("statsChart").getContext("2d");
+  const ctx = document.getElementById("statsChart").getContext("2d");
 
 
-  // window.statsChart =  new Chart(ctx, {
-  //   type: 'bar',
-  //   data: {
-  //     labels: ["Total Events", "Total Seats", "Total Revenue"],
-  //     datasets: [{
-  //       label: 'Event Statistics',
-  //       data: [totalEvents, totalSeats, totalPrice],
-  //       borderWidth: 1
-  //     }]
-  //   },
-  //   options: {
-  //     scales: {
-  //       y: {
-  //         beginAtZero: true
-  //       }
-  //     }
-  //   }
-  // });
+  window.statsChart =  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ["Total Events", "Total Seats", "Total Revenue"],
+      datasets: [{
+        label: 'Event Statistics',
+        data: [totalEvents, totalSeats, totalPrice],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
 }
 
 // ============================================
