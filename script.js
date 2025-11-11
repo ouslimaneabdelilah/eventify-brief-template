@@ -7,28 +7,29 @@ let state = {
   events: [],
   archive: [],
 };
+let editId = null;
 
 // ============================================
 
-// async function loadData() {
-//   const dataEvents = localStorage.getItem("events");
-//   const dataArchive = localStorage.getItem("archive");
-//   if (dataEvents) state.events = JSON.parse(dataEvents);
-//   if (dataArchive) state.archive = JSON.parse(dataArchive);
-//   try {
-//     const res = await fetch(dataurl);
-//     const data = await res.json();
-//     if (!dataArchive) state.archive = data.archive || [];
-//     if (!dataEvents) state.events = data.events || [];
-//   } catch (err) {
-//     console.log("error f data");
-//   }
-// }
+async function loadData() {
+  const dataEvents = localStorage.getItem("events");
+  const dataArchive = localStorage.getItem("archive");
+  if (dataEvents) state.events = JSON.parse(dataEvents);
+  if (dataArchive) state.archive = JSON.parse(dataArchive);
+  try {
+    const res = await fetch(dataurl);
+    const data = await res.json();
+    if (!dataArchive) state.archive = data.archive || [];
+    if (!dataEvents) state.events = data.events || [];
+  } catch (err) {
+    console.log("error f data");
+  }
+}
 
-// function saveData() {
-//   localStorage.setItem("events", JSON.stringify(state.events));
-//   localStorage.setItem("archive", JSON.stringify(state.archive));
-// }
+function saveData() {
+  localStorage.setItem("events", JSON.stringify(state.events));
+  localStorage.setItem("archive", JSON.stringify(state.archive));
+}
 
 // ============================================
 // SCREEN SWITCHING
@@ -42,6 +43,7 @@ function switchScreen(e) {
     scr.classList.remove("is-active");
   });
   e.classList.add("is-active");
+  localStorage.setItem("currentScreen", e.dataset.screen);
   Array.from(screens).map((b) =>
     b.dataset.screen === e.dataset.screen ? b.classList.add("is-visible") : ""
   );
@@ -58,32 +60,49 @@ function switchScreen(e) {
     });
 }
 
-// Listen to sidebar button clicks
-// document.querySelectorAll('.sidebar__btn').forEach(btn => {
-//     btn.addEventListener('click', () => switchScreen(btn.dataset.screen))
-// })
-
 // ============================================
 // STATISTICS SCREEN
 // ============================================
 
-// function renderStats() {
-//   // TODO:
-//   // Calculate from events array:
-//   const totalEvents = state.events.length;
+function renderStats() {
+  // TODO:
+  // Calculate from events array:
+  const totalEvents = state.events.length;
 
-//   const totalSeats = state.events.reduce((sum, e) => sum + e.seats, 0);
-//   const totalPrice = state.events.reduce(
-//     (sum, e) => sum + e.price * e.seats,
-//     0
-//   );
+  const totalSeats = state.events.reduce((sum, e) => sum + e.seats, 0);
+  const totalPrice = state.events.reduce(
+    (sum, e) => sum + e.price * e.seats,
+    0
+  );
 
-//   // Update DOM:
-//   document.getElementById("stat-total-events").textContent = totalEvents;
-//   document.getElementById("stat-total-seats").textContent = totalSeats;
-//   document.getElementById("stat-total-price").textContent =
-//     "$" + totalPrice.toFixed(2);
-// }
+  // Update DOM:
+  document.getElementById("stat-total-events").textContent = totalEvents;
+  document.getElementById("stat-total-seats").textContent = totalSeats;
+  document.getElementById("stat-total-price").textContent =
+    "$" + totalPrice.toFixed(2);
+
+  // const ctx = document.getElementById("statsChart").getContext("2d");
+
+
+  // window.statsChart =  new Chart(ctx, {
+  //   type: 'bar',
+  //   data: {
+  //     labels: ["Total Events", "Total Seats", "Total Revenue"],
+  //     datasets: [{
+  //       label: 'Event Statistics',
+  //       data: [totalEvents, totalSeats, totalPrice],
+  //       borderWidth: 1
+  //     }]
+  //   },
+  //   options: {
+  //     scales: {
+  //       y: {
+  //         beginAtZero: true
+  //       }
+  //     }
+  //   }
+  // });
+}
 
 // ============================================
 // ADD EVENT FORM
@@ -248,7 +267,6 @@ function showErrors(container, errors) {
   }, 5000);
 }
 
-
 function addVariantRow() {
   const variants = document.getElementById("variants-list");
   variants.innerHTML += ` <div class="variant-row">
@@ -266,7 +284,9 @@ function addVariantRow() {
   // 3. Add remove listener to new row's remove button
 }
 
-document.getElementById('btn-add-variant').addEventListener('click', addVariantRow)
+document
+  .getElementById("btn-add-variant")
+  .addEventListener("click", addVariantRow);
 
 function removeVariantRow(button) {
   button.closest(".variant-row").remove();
@@ -288,18 +308,7 @@ function renderEventsTable(eventList, page = 1, perPage = 10) {
       <td>${event.title}</td>
       <td>${event.seats}</td>
       <td>$${event.price}</td>
-      <td><span class="badge">${event.variants
-        .map(
-          (variant) =>
-            `  <ul>
-            <li>Name : ${variant.name} hhh</li>
-            <li>QTY : ${variant.qty}</li>
-            <li>Value : ${variant.value} ${
-              variant.type === "percentage" ? "%" : "$"
-            }</li>
-        </ul>`
-        )
-        .join("")}</span></td>
+      <td><span class="badge">${event.variants.length}</span></td>
       <td>
         <button class="btn btn--small" data-action="details" data-event-id="${
           event.id
@@ -321,43 +330,43 @@ function renderEventsTable(eventList, page = 1, perPage = 10) {
   // 5. Call renderPagination()
 }
 
-// function renderPagination(totalItems, currentPage, perPage) {
-//   // TODO:
-//   // Calculate total pages
-//   const totalPages = Math.ceil(totalItems / perPage);
-//   const pagination = document.getElementById("events-pagination");
+function renderPagination(totalItems, currentPage, perPage) {
+  // TODO:
+  // Calculate total pages
+  const totalPages = Math.ceil(totalItems / perPage);
+  const pagination = document.getElementById("events-pagination");
 
-//   // Generate pagination buttons
-//   // Prev button
-//   const prevBtn = document.createElement("button");
-//   prevBtn.textContent = "Prev";
-//   prevBtn.disabled = currentPage === 1;
-//   prevBtn.className = currentPage === 1 ? "is-disabled" : "";
-//   prevBtn.addEventListener("click", () =>
-//     renderPagination(totalItems, currentPage - 1, perPage)
-//   );
-//   pagination.appendChild(prevBtn);
+  // Generate pagination buttons
+  // Prev button
+  const prevBtn = document.createElement("button");
+  prevBtn.textContent = "Prev";
+  prevBtn.disabled = currentPage === 1;
+  prevBtn.className = currentPage === 1 ? "is-disabled" : "";
+  prevBtn.addEventListener("click", () =>
+    renderPagination(totalItems, currentPage - 1, perPage)
+  );
+  pagination.appendChild(prevBtn);
 
-//   // Page buttons
-//   for (let i = 1; i <= totalPages; i++) {
-//     const btn = document.createElement("button");
-//     btn.textContent = i;
-//     btn.className = i === currentPage ? "is-active" : "";
-//     btn.addEventListener("click", () =>
-//       renderPagination(totalItems, i, perPage)
-//     );
-//     pagination.appendChild(btn);
-//   }
-//   // Next button
-//   const nextBtn = document.createElement("button");
-//   nextBtn.textContent = "Next";
-//   nextBtn.disabled = currentPage === totalPages;
-//   nextBtn.className = currentPage === totalPages ? "is-disabled" : "";
-//   nextBtn.addEventListener("click", () =>
-//     renderPagination(totalItems, currentPage + 1, perPage)
-//   );
-//   pagination.appendChild(nextBtn);
-// }
+  // Page buttons
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = i === currentPage ? "is-active" : "";
+    btn.addEventListener("click", () =>
+      renderPagination(totalItems, i, perPage)
+    );
+    pagination.appendChild(btn);
+  }
+  // Next button
+  const nextBtn = document.createElement("button");
+  nextBtn.textContent = "Next";
+  nextBtn.disabled = currentPage === totalPages;
+  nextBtn.className = currentPage === totalPages ? "is-disabled" : "";
+  nextBtn.addEventListener("click", () =>
+    renderPagination(totalItems, currentPage + 1, perPage)
+  );
+  pagination.appendChild(nextBtn);
+}
 
 function handleTableActionClick(e) {
   const target = e.target;
@@ -379,7 +388,9 @@ function handleTableActionClick(e) {
     archiveEvent(eventId);
   }
 }
-// document.getElementById('events-table').addEventListener('click', handleTableActionClick)
+document
+  .getElementById("events-table")
+  .addEventListener("click", handleTableActionClick);
 function Find(list, id) {
   let resulta = null;
   for (let i = 0; i < list.length; i++) {
@@ -399,47 +410,61 @@ function Filter(list, id) {
   }
   return newArray;
 }
-// function showEventDetails(eventId) {
-//   // TODO:
-//   // 1. Find event by id in events array
-//   let event = Find(state.events, eventId);
-//   if (!event) return;
-//   // 2. Populate #modal-body with event details
-  
-//   const content = `
-//     <p><strong>Seats:</strong> ${event.seats}</p>
-//     <p><strong>Price:</strong>${event.price}</p>
-//     <p><strong>Variants:</strong></p>
-//     <ul>${event.variants.map(v => `
-//         <li>
-//           Name: ${v.name} | QTY:${v.qty} | Value: ${v.value} ${v.type === "percentage" ? "%" : "$"}
-//         </li>
-//       `).join("")}
-//     </ul>
-//   `;
+function showEventDetails(eventId) {
+  // TODO:
+  // 1. Find event by id in events array
+  let event = Find(state.events, eventId);
+  if (!event) return;
+  // 2. Populate #modal-body with event details
 
-//   openModal(event.title, content);
-//   // 3. Remove .is-hidden from #event-modal
-// //   const modal = document.getElementById("event-modal");
-// //   modal.classList.remove("is-hidden");
-// }
+  const content = `
+    <p><strong>Seats:</strong> ${event.seats}</p>
+    <p><strong>Price:</strong>${event.price}</p>
+    <p><strong>Variants:</strong></p>
+    <ul>${event.variants
+      .map(
+        (variant) =>
+          `  <ul>
+            <li>Name : ${variant.name} hhh</li>
+            <li>QTY : ${variant.qty}</li>
+            <li>Value : ${variant.value} ${
+            variant.type === "percentage" ? "%" : "$"
+          }</li>
+        </ul>`
+      )
+      .join("")}
+    </ul>
+  `;
 
-// function editEvent(eventId) {
-//   // TODO:
-//   // 1. Find event by id
-//   let event = Find(state.events, eventId);
-//   if (!event) return;
-//   // 2. Populate form fields with event data
-//   document.getElementById("event-title").value = event.title;
-//   document.getElementById("event-seats").value = event.seats;
-//   document.getElementById("event-price").value = event.price;
+  openModal(event.title, content);
+  // 3. Remove .is-hidden from #event-modal
+  //   const modal = document.getElementById("event-modal");
+  //   modal.classList.remove("is-hidden");
+}
 
-//   // 3. Switch to 'add' screen
-//   document.getElementById("form-screen").classList.remove("is-hidden");
-//   // Store editing ID in a global state if needed
-//   state.editingEventId = event.id;
-//   // 4. On submit, update existing event instead of creating new
-// }
+function editEvent(eventId) {
+  // TODO:
+  // 1. Find event by id
+  let event = Find(state.events, eventId);
+  if (!event) return;
+  // 2. Populate form fields with event data
+  document.getElementById("event-title").value = event.title;
+  document.getElementById("event-seats").value = event.seats;
+  document.getElementById("event-price").value = event.price;
+  document.getElementById("event-image").value = event.image;
+  document.getElementById("event-title").value = event.title;
+  document.getElementById("event-description").value = event.description;
+  document.getElementById("event-price").value = event.price;
+
+  // 3. Switch to 'add' screen
+  const btn = Array.from(sidebar_btns).find(
+      (btn) => btn.dataset.screen === "add"
+    );
+  switchScreen(btn)
+  // Store editing ID in a global state if needed
+  editId = event.id;
+  // 4. On submit, update existing event instead of creating new
+}
 
 function archiveEvent(eventId) {
   // TODO:
@@ -455,7 +480,8 @@ function archiveEvent(eventId) {
   saveData();
   // 5. Re-render table
   renderEventsTable(state.events);
-
+  renderArchiveTable(state.archive);
+  renderStats();
 }
 
 // ============================================
@@ -494,13 +520,13 @@ function restoreEvent(eventId) {
   // 1. Find event by id in archive
   let archive = Find(state.archive, eventId); // 2. Move back to events array
   state.events.push(archive);
-  console.log(state.events);
   // 3. Remove from archive
   let newStateArchive = Filter(state.archive, eventId);
   state.archive = newStateArchive;
-  console.log(state.archive);
   saveData();
   renderArchiveTable(state.archive);
+  renderEventsTable(state.events);
+  renderStats();
   // 4. Save data
   // 5. Re-render both tables
 }
@@ -509,39 +535,40 @@ function restoreEvent(eventId) {
 // MODAL
 // ============================================
 
-// function openModal(title, content) {
-//   // TODO:
+function openModal(title, content) {
+  // TODO:
 
-//   // 1. Set #modal-title
+  // 1. Set #modal-title
 
-//   const modalTitle = document.getElementById("modal-title");
-//   // 2. Set #modal-body content
+  const modalTitle = document.getElementById("modal-title");
+  // 2. Set #modal-body content
 
-//   const modalBody = document.getElementById("modal-body");
+  const modalBody = document.getElementById("modal-body");
 
-//   const modal = document.getElementById("event-modal");
+  const modal = document.getElementById("event-modal");
 
-//   modalTitle.textContent = title;
-//   modalBody.innerHTML = content;
-//   // 3. Remove .is-hidden from #event-modal
+  modalTitle.textContent = title;
+  modalBody.innerHTML = content;
+  // 3. Remove .is-hidden from #event-modal
 
-//   modal.classList.remove("is-hidden");
-// }
+  modal.classList.remove("is-hidden");
+}
 
-
-// function closeModal() {
-//   // TODO:
-//   // Add .is-hidden to #event-modal
-//   document.getElementById("event-modal").classList.add("is-hidden");
-   
-// }
+function closeModal() {
+  // TODO:
+  // Add .is-hidden to #event-modal
+  document.getElementById("event-modal").classList.add("is-hidden");
+}
 
 // Listen to close button and overlay click
-// document.getElementById('event-modal').addEventListener('click', (e) => {
-//     if (e.target.dataset.action === 'close-modal' || e.target.classList.contains('modal__overlay')) {
-//         closeModal()
-//     }
-// })
+document.getElementById("event-modal").addEventListener("click", (e) => {
+  if (
+    e.target.dataset.action === "close-modal" ||
+    e.target.classList.contains("modal__overlay")
+  ) {
+    closeModal();
+  }
+});
 
 // ============================================
 // SEARCH & SORT
@@ -550,64 +577,72 @@ function restoreEvent(eventId) {
 function searchEvents(query) {
   // TODO:
   // Filter events by title (case-insensitive)
-  const eventQuery = state.events.filter(event => event.title.toLowerCase().includes(query.toLowerCase()));
+  const eventQuery = state.events.filter((event) =>
+    event.title.toLowerCase().includes(query.toLowerCase())
+  );
   // Return filtered array
   return eventQuery;
 }
 
-function Sort(list,selectby,type){
-     for (let index = 0; index < list.length; index++) {
-            for (let j = index+1; j < list.length; j++) {
-                let a = (selectby === "title" ? list[index].title.toLowerCase():
-                    selectby === "price" ? Number(list[index].price) :
-                    selectby === "seats" ? Number(list[index].seats) : "")
-                let b = (selectby === "title" ? list[j].title.toLowerCase():
-                    selectby === "price" ? Number(list[j].price) :
-                    selectby === "seats" ? Number(list[j].seats) : ""
-            )
-                if((type === "asc" && a>b) || (type === "desc" && a<b)){
-                    let temp = list[index]
-                    list[index] = list[j]
-                    list[j] = temp
-                }
-                
-            }
-            
-        }
-        return list;
+function Sort(list, selectby, type) {
+  for (let index = 0; index < list.length; index++) {
+    for (let j = index + 1; j < list.length; j++) {
+      let a =
+        selectby === "title"
+          ? list[index].title.toLowerCase()
+          : selectby === "price"
+          ? Number(list[index].price)
+          : selectby === "seats"
+          ? Number(list[index].seats)
+          : "";
+      let b =
+        selectby === "title"
+          ? list[j].title.toLowerCase()
+          : selectby === "price"
+          ? Number(list[j].price)
+          : selectby === "seats"
+          ? Number(list[j].seats)
+          : "";
+      if ((type === "asc" && a > b) || (type === "desc" && a < b)) {
+        let temp = list[index];
+        list[index] = list[j];
+        list[j] = temp;
+      }
+    }
+  }
+  return list;
 }
 function sortEvents(eventList, sortType) {
   // TODO:
   // Sort by: title-asc, title-desc, price-asc, price-desc, seats-asc
-    if(sortType === "title-asc"){
-       eventList = Sort(eventList,"title","asc")
-    }
-    if(sortType === "title-desc"){
-       eventList =Sort(eventList,"title","desc")
-    }
-    if(sortType === "price-asc"){
-       eventList =Sort(eventList,"price","asc")
-    }
-    if(sortType === "price-desc"){
-       eventList =Sort(eventList,"price","desc")
-    }
-    if(sortType === "seats-asc"){
-       eventList=Sort(eventList,"seats","asc")
-    }
+  if (sortType === "title-asc") {
+    eventList = Sort(eventList, "title", "asc");
+  }
+  if (sortType === "title-desc") {
+    eventList = Sort(eventList, "title", "desc");
+  }
+  if (sortType === "price-asc") {
+    eventList = Sort(eventList, "price", "asc");
+  }
+  if (sortType === "price-desc") {
+    eventList = Sort(eventList, "price", "desc");
+  }
+  if (sortType === "seats-asc") {
+    eventList = Sort(eventList, "seats", "asc");
+  }
   return eventList;
 }
 
 // Listen to search and sort changes
-document.getElementById('search-events').addEventListener('input', (e) => {
-    const filtered = searchEvents(e.target.value)
-    renderEventsTable(filtered)
-})
+document.getElementById("search-events").addEventListener("input", (e) => {
+  const filtered = searchEvents(e.target.value);
+  renderEventsTable(filtered);
+});
 
-document.getElementById('sort-events').addEventListener('change', (e) => {
-    const sorted = sortEvents(state.events, e.target.value)
-    console.log(sorted)
-    renderEventsTable(sorted)
-})
+document.getElementById("sort-events").addEventListener("change", (e) => {
+  const sorted = sortEvents(state.events, e.target.value);
+  renderEventsTable(sorted);
+});
 
 // ============================================
 // INITIALIZATION
@@ -621,11 +656,21 @@ function init() {
   // 4. Call renderStats(), renderEventsTable(), renderArchiveTable()
 }
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadData();
+  await loadData().then(() => {
+    const savedScreen = localStorage.getItem("currentScreen");
+    const btn = Array.from(sidebar_btns).find(
+      (btn) => btn.dataset.screen === savedScreen
+    );
+    if (btn) {
+      switchScreen(btn);
+    } else {
+      switchScreen(sidebar_btns[0]);
+    }
+  });
   saveData();
-//   renderStats();
+  renderStats();
   const form = document.getElementById("event-form");
   form.addEventListener("submit", handleFormSubmit);
   renderEventsTable(state.events, 1, 10);
-//   renderArchiveTable(state.archive);
+  renderArchiveTable(state.archive);
 });
