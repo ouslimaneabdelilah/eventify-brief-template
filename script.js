@@ -26,10 +26,10 @@ async function loadData() {
   }
 }
 
-function saveData() {
-  localStorage.setItem("events", JSON.stringify(state.events));
-  localStorage.setItem("archive", JSON.stringify(state.archive));
-}
+// function saveData() {
+//   localStorage.setItem("events", JSON.stringify(state.events));
+//   localStorage.setItem("archive", JSON.stringify(state.archive));
+// }
 
 // ============================================
 // SCREEN SWITCHING
