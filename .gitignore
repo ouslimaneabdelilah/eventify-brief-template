@@ -3,3 +3,10 @@ sum.test.js
 node_modules
 package-lock.json
 package.json
+Find.test.js
+Find.js
+Filter.js
+Filter.test.js
+jest.config.js
+searchEvents.js
+serchEvents.test.js
