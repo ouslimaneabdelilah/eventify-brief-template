@@ -1,3 +1,4 @@
+
 const screens = document.querySelectorAll(".screen");
 const sidebar_btns = document.querySelectorAll(".sidebar__btn");
 const dataurl = "db.json";
@@ -58,6 +59,7 @@ function switchScreen(e) {
         }
       });
     });
+    
 }
 
 // ============================================
@@ -125,9 +127,10 @@ function handleFormSubmit(e) {
   formErrors.innerHTML = "";
   formErrors.classList.add("is-hidden");
 
+  let elemntEdit = Find(state.events, editId);
   let errors = [];
 
-  // Validation de base event
+  // Validation de base
   if (eventTitle.value.trim() === "")
     errors.push("Le titre de l'événement est requis.");
 
@@ -165,7 +168,7 @@ function handleFormSubmit(e) {
 
   // Création de l'objet Event
   const newEvent = {
-    id: state.events.length + 1,
+    id: editId ? editId : state.events.length + 1,
     title: eventTitle.value.trim(),
     image: eventImage.value.trim(),
     seats: Number(eventSeats.value),
@@ -224,7 +227,6 @@ function handleFormSubmit(e) {
       }
     }
 
-    // Ajouter le variant
     newEvent.variants.push({
       name: nameVariant.value.trim(),
       qty: Number(qtyVariant.value),
@@ -233,23 +235,42 @@ function handleFormSubmit(e) {
     });
   });
 
-  // Si erreurs variants
   if (errors.length > 0) {
     showErrors(formErrors, errors);
     return;
   }
 
-  // Sauvegarde
-  addEvent(newEvent);
-  saveData();
+  if (editId) {
+    // Modification
+    Object.assign(elemntEdit, newEvent);
+    formErrors.innerHTML = "Événement modifié avec succès !";
+    formErrors.classList.remove("is-hidden");
+    formErrors.classList.remove("alert--error");
+    formErrors.classList.add("alert--success");
+    editId = null;
+  } else {
+    // Ajout Event
+    addEvent(newEvent);
+    formErrors.innerHTML = "Événement ajouté avec succès !";
+    formErrors.classList.remove("is-hidden");
+    formErrors.classList.remove("alert--error");
+    formErrors.classList.add("alert--success");
+  }
 
-  formErrors.innerHTML = "Événement ajouté avec succès !";
-  formErrors.classList.remove("is-hidden");
+  setTimeout(() => {
+    formErrors.classList.add("is-hidden");
+    formErrors.classList.remove("alert--success");
+    formErrors.classList.add("alert--error");
+  }, 3000);
+  // Sauvegarde
+  saveData();
+  document.querySelector(".btn--primary").textContent = "Create Event";
 
   e.target.reset();
 }
 
-// Fonction pour afficher les erreurs
+//Fonction pour afficher les erreurs
+
 function showErrors(container, errors) {
   container.innerHTML = "";
   const ul = document.createElement("ul");
@@ -284,10 +305,6 @@ function addVariantRow() {
   // 3. Add remove listener to new row's remove button
 }
 
-document
-  .getElementById("btn-add-variant")
-  .addEventListener("click", addVariantRow);
-
 function removeVariantRow(button) {
   button.closest(".variant-row").remove();
 }
@@ -299,12 +316,19 @@ function removeVariantRow(button) {
 function renderEventsTable(eventList, page = 1, perPage = 10) {
   // TODO
   const tbodyTable = document.querySelector(".table__body");
+  const pagination = document.getElementById("events-pagination");
+  tbodyTable.innerHTML = "";
+  pagination.innerHTML = "";
   let html = "";
-  eventList.forEach((event, i) => {
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+  const paginatedList = eventList.slice(start, end);
+  paginatedList.forEach((event, i) => {
     html += `
-    <tr class="table__row" data-event-id="1">
+    <tr class="table__row" data-event-id="${event.id}">
 
       <td>${i + 1}</td>
+      <td><img width="60px" height="60px" src="${event.image}" /></td>
       <td>${event.title}</td>
       <td>${event.seats}</td>
       <td>$${event.price}</td>
@@ -323,6 +347,7 @@ function renderEventsTable(eventList, page = 1, perPage = 10) {
     </tr>`;
   });
   tbodyTable.innerHTML = html;
+  renderPagination(eventList.length, page, perPage);
   // 1. Paginate eventList by page and perPage
   // 2. Generate table rows for each event
   // 3. Add data-event-id to each row
@@ -335,15 +360,16 @@ function renderPagination(totalItems, currentPage, perPage) {
   // Calculate total pages
   const totalPages = Math.ceil(totalItems / perPage);
   const pagination = document.getElementById("events-pagination");
+  pagination.innerHTML = "";
 
   // Generate pagination buttons
   // Prev button
   const prevBtn = document.createElement("button");
   prevBtn.textContent = "Prev";
-  prevBtn.disabled = currentPage === 1;
-  prevBtn.className = currentPage === 1 ? "is-disabled" : "";
+  prevBtn.className = "pagination__btn";
+  if (currentPage === 1) prevBtn.classList.add("is-disabled");
   prevBtn.addEventListener("click", () =>
-    renderPagination(totalItems, currentPage - 1, perPage)
+    renderEventsTable(state.events, currentPage - 1, perPage)
   );
   pagination.appendChild(prevBtn);
 
@@ -351,20 +377,23 @@ function renderPagination(totalItems, currentPage, perPage) {
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement("button");
     btn.textContent = i;
-    btn.className = i === currentPage ? "is-active" : "";
+    btn.className = "pagination__btn";
+    if (i === currentPage) btn.classList.add("is-active");
     btn.addEventListener("click", () =>
-      renderPagination(totalItems, i, perPage)
+      renderEventsTable(state.events, i, perPage)
     );
     pagination.appendChild(btn);
   }
   // Next button
   const nextBtn = document.createElement("button");
   nextBtn.textContent = "Next";
-  nextBtn.disabled = currentPage === totalPages;
-  nextBtn.className = currentPage === totalPages ? "is-disabled" : "";
-  nextBtn.addEventListener("click", () =>
-    renderPagination(totalItems, currentPage + 1, perPage)
-  );
+  nextBtn.className = "pagination__btn";
+  if (currentPage === totalPages || totalPages === 0)
+    nextBtn.classList.add("is-disabled");
+  nextBtn.addEventListener("click", () => {
+    if (currentPage < totalPages)
+      renderEventsTable(state.events, currentPage + 1, perPage);
+  });
   pagination.appendChild(nextBtn);
 }
 
@@ -418,6 +447,7 @@ function showEventDetails(eventId) {
   // 2. Populate #modal-body with event details
 
   const content = `
+    <img width="100%" height="300px" src="${event.image}"/>
     <p><strong>Seats:</strong> ${event.seats}</p>
     <p><strong>Price:</strong>${event.price}</p>
     <p><strong>Variants:</strong></p>
@@ -437,9 +467,6 @@ function showEventDetails(eventId) {
   `;
 
   openModal(event.title, content);
-  // 3. Remove .is-hidden from #event-modal
-  //   const modal = document.getElementById("event-modal");
-  //   modal.classList.remove("is-hidden");
 }
 
 function editEvent(eventId) {
@@ -455,15 +482,40 @@ function editEvent(eventId) {
   document.getElementById("event-title").value = event.title;
   document.getElementById("event-description").value = event.description;
   document.getElementById("event-price").value = event.price;
+  const variantsContainer = document.getElementById("variants-list");
+  variantsContainer.innerHTML = "";
 
+  event.variants.forEach((variant) => {
+    variantsContainer.innerHTML += `
+    <div class="variant-row">
+      <input type="text" class="input variant-row__name" value="${
+        variant.name
+      }" placeholder="Variant name (e.g., 'Early Bird')" />
+      <input type="number" class="input variant-row__qty" value="${
+        variant.qty
+      }" placeholder="Qty" min="1" />
+      <input type="number" class="input variant-row__value" value="${
+        variant.value
+      }" placeholder="Value" step="0.01" />
+      <select class="select variant-row__type">
+        <option value="fixed" ${
+          variant.type === "fixed" ? "selected" : ""
+        }>Fixed Price</option>
+        <option value="percentage" ${
+          variant.type === "percentage" ? "selected" : ""
+        }>Percentage Off</option>
+      </select>
+      <button type="button" class="btn btn--danger btn--small variant-row__remove" onclick="removeVariantRow(this)">Remove</button>
+    </div>
+  `;
+  });
   // 3. Switch to 'add' screen
   const btn = Array.from(sidebar_btns).find(
-      (btn) => btn.dataset.screen === "add"
-    );
-  switchScreen(btn)
-  // Store editing ID in a global state if needed
+    (btn) => btn.dataset.screen === "add"
+  );
+  switchScreen(btn);
   editId = event.id;
-  // 4. On submit, update existing event instead of creating new
+  document.querySelector(".btn--primary").textContent = "Edit Event";
 }
 
 function archiveEvent(eventId) {
@@ -497,13 +549,13 @@ function renderArchiveTable(archivedList) {
 
   archivedList.forEach((event, i) => {
     html += `
-      <tr class="table__row" data-event-id="event.id">
+      <tr class="table__row" data-event-id="${event.id}">
         <td>${i + 1}</td>
         <td>${event.title}</td>
         <td>${event.seats}</td>
         <td>${event.price}</td>
         <td>
-          <button class="btn btn-success btn-small" onclick="restoreEvent(${
+          <button class="btn btn--success btn--small" onclick="restoreEvent(${
             event.id
           })" data-action="restore" data-event-id="${event.id}">
             Restore
@@ -518,17 +570,17 @@ function renderArchiveTable(archivedList) {
 function restoreEvent(eventId) {
   // TODO:
   // 1. Find event by id in archive
-  let archive = Find(state.archive, eventId); // 2. Move back to events array
+  let archive = Find(state.archive, eventId); 
   state.events.push(archive);
   // 3. Remove from archive
   let newStateArchive = Filter(state.archive, eventId);
   state.archive = newStateArchive;
+  // 4. Save data
   saveData();
+  // 5. Re-render both tables
   renderArchiveTable(state.archive);
   renderEventsTable(state.events);
   renderStats();
-  // 4. Save data
-  // 5. Re-render both tables
 }
 
 // ============================================
@@ -576,7 +628,7 @@ document.getElementById("event-modal").addEventListener("click", (e) => {
 
 function searchEvents(query) {
   // TODO:
-  // Filter events by title (case-insensitive)
+  // Filter events by title 
   const eventQuery = state.events.filter((event) =>
     event.title.toLowerCase().includes(query.toLowerCase())
   );
@@ -674,3 +726,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderEventsTable(state.events, 1, 10);
   renderArchiveTable(state.archive);
 });
+
+
