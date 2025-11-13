@@ -1,3 +1,4 @@
+
 const screens = document.querySelectorAll(".screen");
 const sidebar_btns = document.querySelectorAll(".sidebar__btn");
 const dataurl = "db.json";
@@ -7,6 +8,7 @@ let state = {
   events: [],
   archive: [],
 };
+let editId = null;
 
 // ============================================
 
@@ -42,6 +44,7 @@ function switchScreen(e) {
     scr.classList.remove("is-active");
   });
   e.classList.add("is-active");
+  localStorage.setItem("currentScreen", e.dataset.screen);
   Array.from(screens).map((b) =>
     b.dataset.screen === e.dataset.screen ? b.classList.add("is-visible") : ""
   );
@@ -58,32 +61,50 @@ function switchScreen(e) {
     });
 }
 
-// Listen to sidebar button clicks
-// document.querySelectorAll('.sidebar__btn').forEach(btn => {
-//     btn.addEventListener('click', () => switchScreen(btn.dataset.screen))
-// })
-
 // ============================================
 // STATISTICS SCREEN
 // ============================================
 
-// function renderStats() {
-//   // TODO:
-//   // Calculate from events array:
-//   const totalEvents = state.events.length;
+function renderStats() {
+  // TODO:
+  // Calculate from events array:
+  const totalEvents = state.events.length;
 
-//   const totalSeats = state.events.reduce((sum, e) => sum + e.seats, 0);
-//   const totalPrice = state.events.reduce(
-//     (sum, e) => sum + e.price * e.seats,
-//     0
-//   );
+  const totalSeats = state.events.reduce((sum, e) => sum + e.seats, 0);
+  const totalPrice = state.events.reduce(
+    (sum, e) => sum + e.price * e.seats,
+    0
+  );
 
-//   // Update DOM:
-//   document.getElementById("stat-total-events").textContent = totalEvents;
-//   document.getElementById("stat-total-seats").textContent = totalSeats;
-//   document.getElementById("stat-total-price").textContent =
-//     "$" + totalPrice.toFixed(2);
-// }
+  // Update DOM:
+  document.getElementById("stat-total-events").textContent = totalEvents;
+  document.getElementById("stat-total-seats").textContent = totalSeats;
+  document.getElementById("stat-total-price").textContent =
+    "$" + totalPrice.toFixed(2);
+
+  const ctx = document.getElementById("statsChart").getContext("2d");
+
+  window.statsChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Total Events", "Total Seats", "Total Revenue"],
+      datasets: [
+        {
+          label: "Event Statistics",
+          data: [totalEvents, totalSeats, totalPrice],
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+}
 
 // ============================================
 // ADD EVENT FORM
@@ -106,9 +127,10 @@ function handleFormSubmit(e) {
   formErrors.innerHTML = "";
   formErrors.classList.add("is-hidden");
 
+  let elemntEdit = Find(state.events, editId);
   let errors = [];
 
-  // Validation de base event
+  // Validation de base
   if (eventTitle.value.trim() === "")
     errors.push("Le titre de l'événement est requis.");
 
@@ -146,7 +168,7 @@ function handleFormSubmit(e) {
 
   // Création de l'objet Event
   const newEvent = {
-    id: state.events.length + 1,
+    id: editId ? editId : state.events.length + 1,
     title: eventTitle.value.trim(),
     image: eventImage.value.trim(),
     seats: Number(eventSeats.value),
@@ -205,7 +227,6 @@ function handleFormSubmit(e) {
       }
     }
 
-    // Ajouter le variant
     newEvent.variants.push({
       name: nameVariant.value.trim(),
       qty: Number(qtyVariant.value),
@@ -214,23 +235,42 @@ function handleFormSubmit(e) {
     });
   });
 
-  // Si erreurs variants
   if (errors.length > 0) {
     showErrors(formErrors, errors);
     return;
   }
 
-  // Sauvegarde
-  addEvent(newEvent);
-  saveData();
+  if (editId) {
+    // Modification
+    Object.assign(elemntEdit, newEvent);
+    formErrors.innerHTML = "Événement modifié avec succès !";
+    formErrors.classList.remove("is-hidden");
+    formErrors.classList.remove("alert--error");
+    formErrors.classList.add("alert--success");
+    editId = null;
+  } else {
+    // Ajout Event
+    addEvent(newEvent);
+    formErrors.innerHTML = "Événement ajouté avec succès !";
+    formErrors.classList.remove("is-hidden");
+    formErrors.classList.remove("alert--error");
+    formErrors.classList.add("alert--success");
+  }
 
-  formErrors.innerHTML = "Événement ajouté avec succès !";
-  formErrors.classList.remove("is-hidden");
+  setTimeout(() => {
+    formErrors.classList.add("is-hidden");
+    formErrors.classList.remove("alert--success");
+    formErrors.classList.add("alert--error");
+  }, 3000);
+  // Sauvegarde
+  saveData();
+  document.querySelector(".btn--primary").textContent = "Create Event";
 
   e.target.reset();
 }
 
-// Fonction pour afficher les erreurs
+//Fonction pour afficher les erreurs
+
 function showErrors(container, errors) {
   container.innerHTML = "";
   const ul = document.createElement("ul");
@@ -247,7 +287,6 @@ function showErrors(container, errors) {
     container.innerHTML = "";
   }, 5000);
 }
-
 
 function addVariantRow() {
   const variants = document.getElementById("variants-list");
@@ -266,8 +305,6 @@ function addVariantRow() {
   // 3. Add remove listener to new row's remove button
 }
 
-// document.getElementById('btn-add-variant').addEventListener('click', addVariantRow)
-
 function removeVariantRow(button) {
   button.closest(".variant-row").remove();
 }
@@ -277,29 +314,24 @@ function removeVariantRow(button) {
 // ============================================
 
 function renderEventsTable(eventList, page = 1, perPage = 10) {
-  // TODO:
+  // TODO
   const tbodyTable = document.querySelector(".table__body");
+  const pagination = document.getElementById("events-pagination");
+  tbodyTable.innerHTML = "";
+  pagination.innerHTML = "";
   let html = "";
-  eventList.forEach((event, i) => {
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+  const paginatedList = eventList.slice(start, end);
+  paginatedList.forEach((event, i) => {
     html += `
-    <tr class="table__row" data-event-id="1">
+    <tr class="table__row" data-event-id="${event.id}">
 
       <td>${i + 1}</td>
       <td>${event.title}</td>
       <td>${event.seats}</td>
       <td>$${event.price}</td>
-      <td><span class="badge">${event.variants
-        .map(
-          (variant) =>
-            `  <ul>
-            <li>Name : ${variant.name} hhh</li>
-            <li>QTY : ${variant.qty}</li>
-            <li>Value : ${variant.value} ${
-              variant.type === "percentage" ? "%" : "$"
-            }</li>
-        </ul>`
-        )
-        .join("")}</span></td>
+      <td><span class="badge">${event.variants.length}</span></td>
       <td>
         <button class="btn btn--small" data-action="details" data-event-id="${
           event.id
@@ -314,147 +346,192 @@ function renderEventsTable(eventList, page = 1, perPage = 10) {
     </tr>`;
   });
   tbodyTable.innerHTML = html;
-    // 1. Paginate eventList by page and perPage
+  renderPagination(eventList.length, page, perPage);
+  // 1. Paginate eventList by page and perPage
   // 2. Generate table rows for each event
   // 3. Add data-event-id to each row
   // 4. Inject into #events-table tbody
   // 5. Call renderPagination()
 }
 
-// function renderPagination(totalItems, currentPage, perPage) {
-//   // TODO:
-//   // Calculate total pages
-//   const totalPages = Math.ceil(totalItems / perPage);
-//   const pagination = document.getElementById("events-pagination");
+function renderPagination(totalItems, currentPage, perPage) {
+  // TODO:
+  // Calculate total pages
+  const totalPages = Math.ceil(totalItems / perPage);
+  const pagination = document.getElementById("events-pagination");
+  pagination.innerHTML = "";
 
-//   // Generate pagination buttons
-//   // Prev button
-//   const prevBtn = document.createElement("button");
-//   prevBtn.textContent = "Prev";
-//   prevBtn.disabled = currentPage === 1;
-//   prevBtn.className = currentPage === 1 ? "is-disabled" : "";
-//   prevBtn.addEventListener("click", () =>
-//     renderPagination(totalItems, currentPage - 1, perPage)
-//   );
-//   pagination.appendChild(prevBtn);
+  // Generate pagination buttons
+  // Prev button
+  const prevBtn = document.createElement("button");
+  prevBtn.textContent = "Prev";
+  prevBtn.className = "pagination__btn";
+  if (currentPage === 1) prevBtn.classList.add("is-disabled");
+  prevBtn.addEventListener("click", () =>
+    renderEventsTable(state.events, currentPage - 1, perPage)
+  );
+  pagination.appendChild(prevBtn);
 
-//   // Page buttons
-//   for (let i = 1; i <= totalPages; i++) {
-//     const btn = document.createElement("button");
-//     btn.textContent = i;
-//     btn.className = i === currentPage ? "is-active" : "";
-//     btn.addEventListener("click", () =>
-//       renderPagination(totalItems, i, perPage)
-//     );
-//     pagination.appendChild(btn);
-//   }
-//   // Next button
-//   const nextBtn = document.createElement("button");
-//   nextBtn.textContent = "Next";
-//   nextBtn.disabled = currentPage === totalPages;
-//   nextBtn.className = currentPage === totalPages ? "is-disabled" : "";
-//   nextBtn.addEventListener("click", () =>
-//     renderPagination(totalItems, currentPage + 1, perPage)
-//   );
-//   pagination.appendChild(nextBtn);
-// }
+  // Page buttons
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = "pagination__btn";
+    if (i === currentPage) btn.classList.add("is-active");
+    btn.addEventListener("click", () =>
+      renderEventsTable(state.events, i, perPage)
+    );
+    pagination.appendChild(btn);
+  }
+  // Next button
+  const nextBtn = document.createElement("button");
+  nextBtn.textContent = "Next";
+  nextBtn.className = "pagination__btn";
+  if (currentPage === totalPages || totalPages === 0)
+    nextBtn.classList.add("is-disabled");
+  nextBtn.addEventListener("click", () => {
+    if (currentPage < totalPages)
+      renderEventsTable(state.events, currentPage + 1, perPage);
+  });
+  pagination.appendChild(nextBtn);
+}
 
 function handleTableActionClick(e) {
-//   const target = e.target;
+  const target = e.target;
 
   // 1. Check if target has data-action attribute
-//   const action = target.getAttribute("data-action");
-//   if (!action) return;
+  const action = target.getAttribute("data-action");
+  if (!action) return;
 
   // 2. Get event ID
-//   const eventId = target.getAttribute("data-event-id");
-//   if (!eventId) return;
+  const eventId = target.getAttribute("data-event-id");
+  if (!eventId) return;
 
   // 3. Call appropriate function
-//   if (action === "details") {
-//     showEventDetails(eventId);
-//   } else if (action === "edit") {
-//     editEvent(eventId);
-//   } else if (action === "archive") {
-//     archiveEvent(eventId);
-//   }
+  if (action === "details") {
+    showEventDetails(eventId);
+  } else if (action === "edit") {
+    editEvent(eventId);
+  } else if (action === "archive") {
+    archiveEvent(eventId);
+  }
 }
-// document.getElementById('events-table').addEventListener('click', handleTableActionClick)
-// function Find(list, id) {
-//   let resulta = null;
-//   for (let i = 0; i < list.length; i++) {
-//     if (list[i].id === Number(id)) {
-//       resulta = list[i];
-//       break;
-//     }
-//   }
-//   return resulta;
-// }
-// function Filter(list, id) {
-//   let newArray = [];
-//   for (let index = 0; index < list.length; index++) {
-//     if (Number(list[index].id) !== Number(id)) {
-//       newArray.push(list[index]);
-//     }
-//   }
-//   return newArray;
-// }
+document
+  .getElementById("events-table")
+  .addEventListener("click", handleTableActionClick);
+function Find(list, id) {
+  let resulta = null;
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].id === Number(id)) {
+      resulta = list[i];
+      break;
+    }
+  }
+  return resulta;
+}
+function Filter(list, id) {
+  let newArray = [];
+  for (let index = 0; index < list.length; index++) {
+    if (Number(list[index].id) !== Number(id)) {
+      newArray.push(list[index]);
+    }
+  }
+  return newArray;
+}
 function showEventDetails(eventId) {
   // TODO:
   // 1. Find event by id in events array
-//   let event = Find(state.events, eventId);
-//   if (!event) return;
+  let event = Find(state.events, eventId);
+  if (!event) return;
   // 2. Populate #modal-body with event details
-  
-//   const content = `
-//     <p><strong>Seats:</strong> ${event.seats}</p>
-//     <p><strong>Price:</strong>${event.price}</p>
-//     <p><strong>Variants:</strong></p>
-//     <ul>${event.variants.map(v => `
-//         <li>
-//           Name: ${v.name} | QTY:${v.qty} | Value: ${v.value} ${v.type === "percentage" ? "%" : "$"}
-//         </li>
-//       `).join("")}
-//     </ul>
-//   `;
 
-//   openModal(event.title, content);
-  // 3. Remove .is-hidden from #event-modal
-//   const modal = document.getElementById("event-modal");
-//   modal.classList.remove("is-hidden");
+  const content = `
+    <p><strong>Seats:</strong> ${event.seats}</p>
+    <p><strong>Price:</strong>${event.price}</p>
+    <p><strong>Variants:</strong></p>
+    <ul>${event.variants
+      .map(
+        (variant) =>
+          `  <ul>
+            <li>Name : ${variant.name} hhh</li>
+            <li>QTY : ${variant.qty}</li>
+            <li>Value : ${variant.value} ${
+            variant.type === "percentage" ? "%" : "$"
+          }</li>
+        </ul>`
+      )
+      .join("")}
+    </ul>
+  `;
+
+  openModal(event.title, content);
 }
 
 function editEvent(eventId) {
   // TODO:
   // 1. Find event by id
-//   let event = Find(state.events, eventId);
-//   if (!event) return;
+  let event = Find(state.events, eventId);
+  if (!event) return;
   // 2. Populate form fields with event data
-//   document.getElementById("event-title").value = event.title;
-//   document.getElementById("event-seats").value = event.seats;
-//   document.getElementById("event-price").value = event.price;
+  document.getElementById("event-title").value = event.title;
+  document.getElementById("event-seats").value = event.seats;
+  document.getElementById("event-price").value = event.price;
+  document.getElementById("event-image").value = event.image;
+  document.getElementById("event-title").value = event.title;
+  document.getElementById("event-description").value = event.description;
+  document.getElementById("event-price").value = event.price;
+  const variantsContainer = document.getElementById("variants-list");
+  variantsContainer.innerHTML = "";
 
+  event.variants.forEach((variant) => {
+    variantsContainer.innerHTML += `
+    <div class="variant-row">
+      <input type="text" class="input variant-row__name" value="${
+        variant.name
+      }" placeholder="Variant name (e.g., 'Early Bird')" />
+      <input type="number" class="input variant-row__qty" value="${
+        variant.qty
+      }" placeholder="Qty" min="1" />
+      <input type="number" class="input variant-row__value" value="${
+        variant.value
+      }" placeholder="Value" step="0.01" />
+      <select class="select variant-row__type">
+        <option value="fixed" ${
+          variant.type === "fixed" ? "selected" : ""
+        }>Fixed Price</option>
+        <option value="percentage" ${
+          variant.type === "percentage" ? "selected" : ""
+        }>Percentage Off</option>
+      </select>
+      <button type="button" class="btn btn--danger btn--small variant-row__remove" onclick="removeVariantRow(this)">Remove</button>
+    </div>
+  `;
+  });
   // 3. Switch to 'add' screen
-//   document.getElementById("form-screen").classList.remove("is-hidden");
-  // Store editing ID in a global state if needed
-//   state.editingEventId = event.id;
-  // 4. On submit, update existing event instead of creating new
+  const btn = Array.from(sidebar_btns).find(
+    (btn) => btn.dataset.screen === "add"
+  );
+  switchScreen(btn);
+  editId = event.id;
+  document.querySelector(".btn--primary").textContent = "Edit Event";
 }
 
 function archiveEvent(eventId) {
   // TODO:
   // 1. Find event by id in events
-//   let event = Find(state.events, eventId);
-//   if (!event) return;
+  let event = Find(state.events, eventId);
+  if (!event) return;
   // 2. Move to archive array
-//   state.archive.push(event);
+  state.archive.push(event);
   // 3. Remove from events array
-//   let newStateEvents = Filter(state.events, eventId);
-//   state.events = newStateEvents;
+  let newStateEvents = Filter(state.events, eventId);
+  state.events = newStateEvents;
   // 4. Save data
-//   saveData();
+  saveData();
   // 5. Re-render table
-//   renderEventsTable(state.events);
+  renderEventsTable(state.events);
+  renderArchiveTable(state.archive);
+  renderStats();
 }
 
 // ============================================
@@ -465,44 +542,43 @@ function renderArchiveTable(archivedList) {
   // TODO:
   // Similar to renderEventsTable but read-only
   // Show "Restore" button instead of "Edit"/"Delete"
-//   const tbodyTable = document.querySelector(".table__body2");
-//   let html = "";
+  const tbodyTable = document.querySelector(".table__body2");
+  let html = "";
 
-//   archivedList.forEach((event, i) => {
-//     html += `
-//       <tr class="table__row" data-event-id="event.id">
-//         <td>${i + 1}</td>
-//         <td>${event.title}</td>
-//         <td>${event.seats}</td>
-//         <td>${event.price}</td>
-//         <td>
-//           <button class="btn btn-success btn-small" onclick="restoreEvent(${
-//             event.id
-//           })" data-action="restore" data-event-id="${event.id}">
-//             Restore
-//           </button>
-//         </td>
-//       </tr>
-//     `;
-//   });
-//   tbodyTable.innerHTML = html;
-// }
+  archivedList.forEach((event, i) => {
+    html += `
+      <tr class="table__row" data-event-id="${event.id}">
+        <td>${i + 1}</td>
+        <td>${event.title}</td>
+        <td>${event.seats}</td>
+        <td>${event.price}</td>
+        <td>
+          <button class="btn btn--success btn--small" onclick="restoreEvent(${
+            event.id
+          })" data-action="restore" data-event-id="${event.id}">
+            Restore
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+  tbodyTable.innerHTML = html;
+}
 
 function restoreEvent(eventId) {
   // TODO:
   // 1. Find event by id in archive
-//   let archive = Find(state.archive, eventId); 
-  // 2. Move back to events array
-//   state.events.push(archive);
-//   console.log(state.events);
+  let archive = Find(state.archive, eventId); 
+  state.events.push(archive);
   // 3. Remove from archive
-//   let newStateArchive = Filter(state.archive, eventId);
-//   state.archive = newStateArchive;
-//   console.log(state.archive);
-//   saveData();
-//   renderArchiveTable(state.archive);
+  let newStateArchive = Filter(state.archive, eventId);
+  state.archive = newStateArchive;
   // 4. Save data
+  saveData();
   // 5. Re-render both tables
+  renderArchiveTable(state.archive);
+  renderEventsTable(state.events);
+  renderStats();
 }
 
 // ============================================
@@ -514,34 +590,35 @@ function openModal(title, content) {
 
   // 1. Set #modal-title
 
-//   const modalTitle = document.getElementById("modal-title");
+  const modalTitle = document.getElementById("modal-title");
   // 2. Set #modal-body content
 
-//   const modalBody = document.getElementById("modal-body");
+  const modalBody = document.getElementById("modal-body");
 
-//   const modal = document.getElementById("event-modal");
+  const modal = document.getElementById("event-modal");
 
-//   modalTitle.textContent = title;
-//   modalBody.innerHTML = content;
+  modalTitle.textContent = title;
+  modalBody.innerHTML = content;
   // 3. Remove .is-hidden from #event-modal
 
-//   modal.classList.remove("is-hidden");
+  modal.classList.remove("is-hidden");
 }
-
 
 function closeModal() {
   // TODO:
   // Add .is-hidden to #event-modal
-//   document.getElementById("event-modal").classList.add("is-hidden");
-   
+  document.getElementById("event-modal").classList.add("is-hidden");
 }
 
 // Listen to close button and overlay click
-// document.getElementById('event-modal').addEventListener('click', (e) => {
-//     if (e.target.dataset.action === 'close-modal' || e.target.classList.contains('modal__overlay')) {
-//         closeModal()
-//     }
-// })
+document.getElementById("event-modal").addEventListener("click", (e) => {
+  if (
+    e.target.dataset.action === "close-modal" ||
+    e.target.classList.contains("modal__overlay")
+  ) {
+    closeModal();
+  }
+});
 
 // ============================================
 // SEARCH & SORT
@@ -549,36 +626,73 @@ function closeModal() {
 
 function searchEvents(query) {
   // TODO:
-  // Filter events by title (case-insensitive)
-//   const eventQuery = state.events.filter(event => event.title.toLowerCase().includes(query.toLowerCase()));
+  // Filter events by title 
+  const eventQuery = state.events.filter((event) =>
+    event.title.toLowerCase().includes(query.toLowerCase())
+  );
   // Return filtered array
-//   return eventQuery;
+  return eventQuery;
 }
 
-
+function Sort(list, selectby, type) {
+  for (let index = 0; index < list.length; index++) {
+    for (let j = index + 1; j < list.length; j++) {
+      let a =
+        selectby === "title"
+          ? list[index].title.toLowerCase()
+          : selectby === "price"
+          ? Number(list[index].price)
+          : selectby === "seats"
+          ? Number(list[index].seats)
+          : "";
+      let b =
+        selectby === "title"
+          ? list[j].title.toLowerCase()
+          : selectby === "price"
+          ? Number(list[j].price)
+          : selectby === "seats"
+          ? Number(list[j].seats)
+          : "";
+      if ((type === "asc" && a > b) || (type === "desc" && a < b)) {
+        let temp = list[index];
+        list[index] = list[j];
+        list[j] = temp;
+      }
+    }
+  }
+  return list;
+}
 function sortEvents(eventList, sortType) {
   // TODO:
   // Sort by: title-asc, title-desc, price-asc, price-desc, seats-asc
-    // const sortSelect = document.getElementById("sort-events")
-    // if(sortSelect.value === title-asc){
-    //     for (let index = 0; index < eventList.length; index++) {
-    //         eventList.toLowerCase() === 
-            
-    //     }
-    // }
-  // Return sorted array
+  if (sortType === "title-asc") {
+    eventList = Sort(eventList, "title", "asc");
+  }
+  if (sortType === "title-desc") {
+    eventList = Sort(eventList, "title", "desc");
+  }
+  if (sortType === "price-asc") {
+    eventList = Sort(eventList, "price", "asc");
+  }
+  if (sortType === "price-desc") {
+    eventList = Sort(eventList, "price", "desc");
+  }
+  if (sortType === "seats-asc") {
+    eventList = Sort(eventList, "seats", "asc");
+  }
+  return eventList;
 }
 
 // Listen to search and sort changes
-document.getElementById('search-events').addEventListener('input', (e) => {
-    const filtered = searchEvents(e.target.value)
-    renderEventsTable(filtered)
-})
+document.getElementById("search-events").addEventListener("input", (e) => {
+  const filtered = searchEvents(e.target.value);
+  renderEventsTable(filtered);
+});
 
-document.getElementById('sort-events').addEventListener('change', (e) => {
-    const sorted = sortEvents(events, e.target.value)
-    renderEventsTable(sorted)
-})
+document.getElementById("sort-events").addEventListener("change", (e) => {
+  const sorted = sortEvents(state.events, e.target.value);
+  renderEventsTable(sorted);
+});
 
 // ============================================
 // INITIALIZATION
@@ -592,7 +706,17 @@ function init() {
   // 4. Call renderStats(), renderEventsTable(), renderArchiveTable()
 }
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadData();
+  await loadData().then(() => {
+    const savedScreen = localStorage.getItem("currentScreen");
+    const btn = Array.from(sidebar_btns).find(
+      (btn) => btn.dataset.screen === savedScreen
+    );
+    if (btn) {
+      switchScreen(btn);
+    } else {
+      switchScreen(sidebar_btns[0]);
+    }
+  });
   saveData();
   renderStats();
   const form = document.getElementById("event-form");
@@ -600,3 +724,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderEventsTable(state.events, 1, 10);
   renderArchiveTable(state.archive);
 });
+
+
